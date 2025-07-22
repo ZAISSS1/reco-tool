@@ -3227,6 +3227,18 @@ ${otherDetails}
                 timeDisplay = '0';
             }
 
+            // 收取時間描述 - 根據時間段動態生成
+            let collectionTimeDesc = '';
+            if (timeDisplay.includes('上午')) {
+                collectionTimeDesc = '中午前';
+            } else if (timeDisplay.includes('下午')) {
+                collectionTimeDesc = '下午前';
+            } else if (timeDisplay.includes('晚間')) {
+                collectionTimeDesc = '半夜前';
+            } else {
+                collectionTimeDesc = '中午前';
+            }
+
             // 服務星期格式化
             let daysDisplay = serviceDays;
             if (serviceDays.includes('週')) {
@@ -3318,7 +3330,7 @@ ${weeklyFrequency}-${daysDisplay}
    置放時間：${timeDisplay}
    置放樓層：${floorDisplay}
 
-（⚠️ 垃圾當日：中午前   代收完畢）
+（⚠️ 垃圾當日：${collectionTimeDesc}   代收完畢）
 
 （⚠️ 過程中嚴禁催促）
 （⚠️ 請準時置放 以免多有糾紛）
