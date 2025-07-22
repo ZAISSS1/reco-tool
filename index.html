@@ -1007,55 +1007,69 @@
                             <input type="date" id="monthly-date">
                         </div>
                         <div>
+                            <label for="monthly-calculation-mode">計費方式：</label>
+                            <select id="monthly-calculation-mode" onchange="toggleMonthlyPriceInput()">
+                                <option value="percentage" selected>百分比抽成</option>
+                                <option value="fixed">固定價格</option>
+                            </select>
+                        </div>
+                        <div id="monthly-percentage-div">
                             <label for="monthly-percentage">百分比：</label>
                             <input type="text" id="monthly-percentage" value="50" placeholder="執行人抽成%數">
                         </div>
+                        <div id="monthly-fixed-price-div" style="display: none;">
+                            <label for="monthly-fixed-price">固定價格：</label>
+                            <input type="number" id="monthly-fixed-price" min="0" step="50" placeholder="例如：300">
+                        </div>
                         <div>
-                            <label for="monthly-upstairs">上樓：</label>
-                            <select id="monthly-upstairs">
-                                <option value="需上樓" selected>需上樓</option>
+                            <label for="monthly-upstairs" style="color: #888;">上樓：</label>
+                            <select id="monthly-upstairs" style="color: #888;">
+                                <option value="" selected>請選擇</option>
+                                <option value="需上樓">需上樓</option>
                                 <option value="不用上樓">不用上樓</option>
                             </select>
                         </div>
                         <div>
-                            <label for="monthly-address">地址：</label>
-                            <input type="text" id="monthly-address" placeholder="請輸入完整地址">
+                            <label for="monthly-address" style="color: #888;">地址：</label>
+                            <input type="text" id="monthly-address" placeholder="請輸入完整地址" value="" style="color: #888;">
                         </div>
                         <div>
-                            <label for="monthly-phone">電話：</label>
-                            <input type="text" id="monthly-phone" placeholder="請輸入聯絡電話">
+                            <label for="monthly-phone" style="color: #888;">電話：</label>
+                            <input type="text" id="monthly-phone" placeholder="請輸入聯絡電話" value="" style="color: #888;">
                         </div>
                         <div>
-                            <label for="monthly-name">姓名：</label>
-                            <input type="text" id="monthly-name" placeholder="請輸入客戶姓名">
+                            <label for="monthly-name" style="color: #888;">姓名：</label>
+                            <input type="text" id="monthly-name" placeholder="請輸入客戶姓名" value="" style="color: #888;">
                         </div>
                         <div>
-                            <label for="monthly-key">鑰匙：</label>
-                            <select id="monthly-key">
-                                <option value="無" selected>無</option>
+                            <label for="monthly-key" style="color: #888;">鑰匙：</label>
+                            <select id="monthly-key" style="color: #888;">
+                                <option value="" selected>請選擇</option>
+                                <option value="無">無</option>
                                 <option value="有">有</option>
                             </select>
                         </div>
                         <div>
-                            <label for="monthly-time">時間：</label>
-                            <input type="text" id="monthly-time" placeholder="例如：0800後">
+                            <label for="monthly-time" style="color: #888;">時間：</label>
+                            <input type="text" id="monthly-time" placeholder="例如：0800後" value="" style="color: #888;">
                         </div>
                     </div>
                     
                     <!-- 第二行設定參數 -->
                     <div class="form-row">
                         <div>
-                            <label for="monthly-trash-pickup">垃圾：</label>
-                            <input type="number" id="monthly-trash-pickup" min="1" max="100" value="3" placeholder="垃圾一次收取包數">
+                            <label for="monthly-trash-pickup" style="color: #888;">垃圾：</label>
+                            <input type="number" id="monthly-trash-pickup" min="1" max="100" value="" placeholder="垃圾一次收取包數" style="color: #888;">
                         </div>
                         <div>
-                            <label for="monthly-recycle-pickup">資源：</label>
-                            <input type="number" id="monthly-recycle-pickup" min="1" max="100" value="3" placeholder="資源一次收取包數">
+                            <label for="monthly-recycle-pickup" style="color: #888;">資源：</label>
+                            <input type="number" id="monthly-recycle-pickup" min="1" max="100" value="" placeholder="資源一次收取包數" style="color: #888;">
                         </div>
                         <div>
-                            <label for="monthly-bag">專用袋：</label>
-                            <select id="monthly-bag">
-                                <option value="有" selected>有</option>
+                            <label for="monthly-bag" style="color: #888;">專用袋：</label>
+                            <select id="monthly-bag" style="color: #888;">
+                                <option value="" selected>請選擇</option>
+                                <option value="有">有</option>
                                 <option value="無">無</option>
                             </select>
                         </div>
@@ -1384,6 +1398,21 @@
             event.target.classList.add('active');
         }
 
+        // 切換包月任務計費方式
+        function toggleMonthlyPriceInput() {
+            const calculationMode = document.getElementById('monthly-calculation-mode').value;
+            const percentageDiv = document.getElementById('monthly-percentage-div');
+            const fixedPriceDiv = document.getElementById('monthly-fixed-price-div');
+            
+            if (calculationMode === 'fixed') {
+                percentageDiv.style.display = 'none';
+                fixedPriceDiv.style.display = 'block';
+            } else {
+                percentageDiv.style.display = 'block';
+                fixedPriceDiv.style.display = 'none';
+            }
+        }
+
         // Quote generation function
         function generateQuote() {
             // 獲取所有表單數據
@@ -1536,7 +1565,9 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             const date = document.getElementById('monthly-date').value;
             
             // 獲取所有手動輸入欄位
+            const calculationMode = document.getElementById('monthly-calculation-mode').value;
             const percentage = document.getElementById('monthly-percentage').value.replace('%', '') || '50';
+            const fixedPrice = document.getElementById('monthly-fixed-price').value;
             const upstairs = document.getElementById('monthly-upstairs').value;
             const address = document.getElementById('monthly-address').value;
             const phone = document.getElementById('monthly-phone').value;
@@ -1573,11 +1604,15 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
                 }
             }
             
-            // 提取費用並應用百分比
-            const feeMatch = quoteData.match(/一個月費用：(\d+)/);
-            if (feeMatch) {
-                const originalFee = parseInt(feeMatch[1]);
-                fee = Math.floor(originalFee * (parseInt(percentage) / 100));
+            // 提取費用並應用計算模式
+            if (calculationMode === 'fixed' && fixedPrice) {
+                fee = parseInt(fixedPrice);
+            } else {
+                const feeMatch = quoteData.match(/一個月費用：(\d+)/);
+                if (feeMatch) {
+                    const originalFee = parseInt(feeMatch[1]);
+                    fee = Math.floor(originalFee * (parseInt(percentage) / 100));
+                }
             }
             
             // 提取週趟數和日期
@@ -1649,7 +1684,8 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             for (const pattern of trashPatterns) {
                 const match = quoteData.match(pattern);
                 if (match) {
-                    trashAmount = `${match[1]}包（${match[2]}公升）`;
+                    const volume = match[2].replace('公升', '');
+                    trashAmount = `${match[1]}包（${volume}公升）`;
                     trashMatchFound = true;
                     break;
                 }
@@ -1669,7 +1705,8 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             for (const pattern of recyclePatterns) {
                 const match = quoteData.match(pattern);
                 if (match) {
-                    recycleAmount = `${match[1]}包（${match[2]}公升）`;
+                    const volume = match[2].replace('公升', '');
+                    recycleAmount = `${match[1]}包（${volume}公升）`;
                     recycleMatchFound = true;
                     break;
                 }
