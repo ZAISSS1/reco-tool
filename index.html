@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>聯能永續-報價工具</title>
-    
-    <!-- 使用自定義圖標 -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="favicon.ico">
-    
-    <meta name="theme-color" content="#667eea">    <meta name="theme-color" content="#667eea">
+    <!-- 使用自定義圖標 - 強制重新載入 -->
+    <link rel="icon" href="favicon.ico?v=2" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico?v=2" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon.ico?v=2">
+    <meta name="theme-color" content="#667eea">
     <style>
         * {
             margin: 0;
@@ -814,12 +812,18 @@
                     <h4>📊 資料偵測設定</h4>
                     <div class="form-row">
                         <div>
-                            <label for="sheet-name">工作表名稱：</label>
-                            <input type="text" id="sheet-name" placeholder="例：報價資料" value="工作表1">
+                            <label for="update-mode">更新模式：</label>
+                            <select id="update-mode" onchange="toggleCustomRowInput()">
+                                <option value="latest">最新一列</option>
+                                <option value="all">所有資料</option>
+                                <option value="last-5">最後5列</option>
+                                <option value="last-10">最後10列</option>
+                                <option value="last-20">最後20列</option>
+                            </select>
                         </div>
                         <div>
-                            <label for="start-row">開始列數：</label>
-                            <input type="number" id="start-row" min="1" value="2" placeholder="第幾列開始">
+                            <label for="sheet-name">工作表名稱：</label>
+                            <input type="text" id="sheet-name" placeholder="例：報價資料" value="工作表1">
                         </div>
                         <div>
                             <label for="data-columns">資料欄位：</label>
@@ -830,15 +834,9 @@
                                 <option value="A-L">A到L欄</option>
                             </select>
                         </div>
-                        <div>
-                            <label for="update-mode">更新模式：</label>
-                            <select id="update-mode">
-                                <option value="latest">最新一列</option>
-                                <option value="all">所有資料</option>
-                                <option value="last-5">最後5列</option>
-                            </select>
-                        </div>
                     </div>
+                    
+
                 </div>
                 
                 <div style="display: flex; justify-content: center; margin: 25px 0;">
@@ -1516,6 +1514,7 @@
 （蛋糕盒/緩衝材料➡️垃圾）
 
 一個月費用：${monthlyFee}元
+（上樓代收需提供1樓大門鑰匙）
 ${keyNote}
 
 -
@@ -2755,20 +2754,28 @@ ${otherDetails}
                     throw new Error('試算表中沒有找到任何有效資料');
                 }
 
-                const startRow = Math.max(0, parseInt(document.getElementById('start-row').value) - 1);
+                const startRow = 1; // 固定從第2列開始（跳過表頭）
                 const updateMode = document.getElementById('update-mode').value;
+                
+                // 取得表頭和資料行
+                const headers = filteredRows[0] || [];
+                const allDataRows = filteredRows.slice(1); // 移除表頭行
                 
                 let dataRows;
                 if (updateMode === 'latest') {
-                    dataRows = filteredRows.slice(-1);
+                    dataRows = allDataRows.slice(-1);
                 } else if (updateMode === 'last-5') {
-                    dataRows = filteredRows.slice(-5);
+                    dataRows = allDataRows.slice(-5);
+                } else if (updateMode === 'last-10') {
+                    dataRows = allDataRows.slice(-10);
+                } else if (updateMode === 'last-20') {
+                    dataRows = allDataRows.slice(-20);
                 } else {
-                    dataRows = filteredRows.slice(startRow);
+                    dataRows = allDataRows; // 所有資料模式
                 }
 
                 autoQuoteData = {
-                    headers: filteredRows[0] || [],
+                    headers: headers,
                     rows: dataRows
                 };
 
@@ -2961,7 +2968,7 @@ ${otherDetails}
             }
 
             data.rows.forEach((row, index) => {
-                html += `<tr style="background: ${index % 2 === 0 ? '#2a2a2a' : '#333333'};">`;
+                html += `<tr onclick="selectRowForQuote(${index})" style="cursor: pointer; background: ${index % 2 === 0 ? '#2a2a2a' : '#333333'};" class="data-row" title="點擊選擇此資料作為報價單來源" onmouseover="this.style.background='#4a4a4a'" onmouseout="this.style.background='${index % 2 === 0 ? '#2a2a2a' : '#333333'}'">`;
                 row.forEach(cell => {
                     html += `<td style="border: 1px solid #666; padding: 8px;">${cell}</td>`;
                 });
@@ -3365,7 +3372,7 @@ ${weeklyFrequency}-${daysDisplay}
 （蛋糕盒/緩衝材料➡️垃圾）
 
 一個月費用：${monthlyFee}元
-
+（上樓代收需提供1樓大門鑰匙）
 
 -
 ⛔配合事項⛔
@@ -3477,6 +3484,166 @@ ${weeklyFrequency}-${daysDisplay}
 
 
 
+
+        // 控制更新模式UI（目前無需額外輸入欄位）
+        function toggleCustomRowInput() {
+            // 所有模式都不需要額外輸入欄位
+        }
+
+        // 選擇特定行作為報價單來源
+        function selectRowForQuote(rowIndex) {
+            if (!autoQuoteData || !autoQuoteData.rows || rowIndex >= autoQuoteData.rows.length) {
+                showStatus('auto-quote-final-status', '❌ 無效的資料行選擇', 'error');
+                return;
+            }
+
+            showStatus('auto-quote-final-status', `🔄 正在使用第${rowIndex + 1}行資料生成報價單...`, 'success');
+
+            try {
+                // 移除之前選中行的高亮
+                document.querySelectorAll('.data-row').forEach(row => {
+                    row.style.border = '';
+                    row.style.boxShadow = '';
+                });
+
+                // 高亮選中的行
+                const selectedRow = document.querySelector(`tr[onclick="selectRowForQuote(${rowIndex})"]`);
+                if (selectedRow) {
+                    selectedRow.style.border = '2px solid #ffd700';
+                    selectedRow.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.3)';
+                }
+
+                const selectedRowData = autoQuoteData.rows[rowIndex];
+                const headers = autoQuoteData.headers;
+
+                // 獲取手動輸入的資料
+                const selectedDays = Array.from(document.querySelectorAll('input[name="manual-days"]:checked')).map(cb => cb.value);
+                const manualData = {
+                    lineName: '',
+                    address: '',
+                    housingType: '',
+                    monthlyFee: document.getElementById('manual-fee').value || '',
+                    serviceDays: selectedDays.join('、') || '',
+                    serviceTime: document.getElementById('manual-time').value || '',
+                    floor: document.getElementById('manual-floor').value || '',
+                    frequency: document.getElementById('manual-frequency').value || '',
+                    trashBags: document.getElementById('manual-trash').value || '',
+                    recycleBags: document.getElementById('manual-recycle').value || '',
+                    trashVolume: document.getElementById('manual-trash-volume').value || '',
+                    recycleVolume: document.getElementById('manual-recycle-volume').value || '',
+                    trashMax: document.getElementById('manual-trash-max').value || '',
+                    recycleMax: document.getElementById('manual-recycle-max').value || '',
+                    specialNotes: document.getElementById('manual-special-notes').value || ''
+                };
+
+                const fieldMapping = {};
+                let trashData = { bags: '', volume: '' };
+                let recycleData = { bags: '', volume: '' };
+
+                // 處理選中行的資料（使用與generateAutoQuote相同的邏輯）
+                headers.forEach((header, index) => {
+                    const lowerHeader = header.toLowerCase();
+                    const cellValue = selectedRowData[index];
+
+                    if (lowerHeader.includes('line') || lowerHeader.includes('暱稱')) {
+                        fieldMapping.lineName = cellValue;
+                    } else if (lowerHeader.includes('地址')) {
+                        fieldMapping.address = cellValue;
+                        if (cellValue && (!manualData.floor || manualData.floor.trim() === '')) {
+                            const floorMatch = cellValue.match(/(\d+)[樓F]/);
+                            if (floorMatch) {
+                                fieldMapping.floor = floorMatch[1];
+                                document.getElementById('manual-floor').value = floorMatch[1];
+                            }
+                        }
+                    } else if (lowerHeader.includes('住宅') || lowerHeader.includes('性質')) {
+                        fieldMapping.housingType = cellValue;
+                    } else if (lowerHeader.includes('月費') || lowerHeader.includes('費用')) {
+                        fieldMapping.monthlyFee = (manualData.monthlyFee && manualData.monthlyFee.trim() !== '') ? manualData.monthlyFee : cellValue;
+                    } else if (lowerHeader.includes('星期') || lowerHeader.includes('收取')) {
+                        if (cellValue && cellValue.trim() !== '') {
+                            const frequencyMatch = cellValue.match(/(\d+)/);
+                            if (frequencyMatch) {
+                                fieldMapping.weeklyFrequency = `一週趟數：${frequencyMatch[1]}趟`;
+                            } else {
+                                fieldMapping.weeklyFrequency = `一週趟數：${cellValue}趟`;
+                            }
+                        }
+                        fieldMapping.serviceDays = manualData.serviceDays;
+                    } else if (lowerHeader.includes('時間')) {
+                        fieldMapping.serviceTime = (manualData.serviceTime && manualData.serviceTime.trim() !== '') ? manualData.serviceTime : cellValue;
+                    } else if (lowerHeader.includes('樓層')) {
+                        fieldMapping.floor = (manualData.floor && manualData.floor.trim() !== '') ? manualData.floor : ((cellValue && cellValue.trim() !== '') ? cellValue : '0');
+                    } else if (lowerHeader.includes('垃圾')) {
+                        if (cellValue && cellValue.trim() !== '') {
+                            const bagMatch = cellValue.match(/(\d+)包/);
+                            const headerVolumeMatch = header.match(/(\d+(?:\/\d+)?公升)/);
+                            if (bagMatch) {
+                                trashData.bags = bagMatch[1];
+                                if (headerVolumeMatch) {
+                                    trashData.volume = headerVolumeMatch[1];
+                                }
+                            }
+                        }
+                    } else if (lowerHeader.includes('資源')) {
+                        if (cellValue && cellValue.trim() !== '') {
+                            const bagMatch = cellValue.match(/(\d+)包/);
+                            const headerVolumeMatch = header.match(/(\d+(?:\/\d+)?公升)/);
+                            if (bagMatch) {
+                                recycleData.bags = bagMatch[1];
+                                if (headerVolumeMatch) {
+                                    recycleData.volume = headerVolumeMatch[1];
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // 組合垃圾袋和資源袋資料
+                if (manualData.trashBags || manualData.trashVolume) {
+                    if (manualData.trashBags && manualData.trashVolume) {
+                        fieldMapping.trashBags = `${manualData.trashBags}包數（${manualData.trashVolume}）`;
+                    } else if (manualData.trashBags) {
+                        fieldMapping.trashBags = `${manualData.trashBags}包數（14公升）`;
+                    } else {
+                        fieldMapping.trashBags = `6包數（${manualData.trashVolume}）`;
+                    }
+                } else if (trashData.bags && trashData.volume) {
+                    fieldMapping.trashBags = `${trashData.bags}包（${trashData.volume}）`;
+                } else if (trashData.bags) {
+                    fieldMapping.trashBags = `${trashData.bags}包（14公升）`;
+                } else {
+                    fieldMapping.trashBags = '6包（14公升）';
+                }
+
+                if (manualData.recycleBags || manualData.recycleVolume) {
+                    if (manualData.recycleBags && manualData.recycleVolume) {
+                        fieldMapping.recycleBags = `${manualData.recycleBags}包數（${manualData.recycleVolume}）`;
+                    } else if (manualData.recycleBags) {
+                        fieldMapping.recycleBags = `${manualData.recycleBags}包數（14公升）`;
+                    } else {
+                        fieldMapping.recycleBags = `3包數（${manualData.recycleVolume}）`;
+                    }
+                } else if (recycleData.bags && recycleData.volume) {
+                    fieldMapping.recycleBags = `${recycleData.bags}包（${recycleData.volume}）`;
+                } else if (recycleData.bags) {
+                    fieldMapping.recycleBags = `${recycleData.bags}包（14公升）`;
+                } else {
+                    fieldMapping.recycleBags = '3包（14公升）';
+                }
+
+                console.log(`Selected row ${rowIndex + 1} field mapping:`, fieldMapping);
+
+                const quote = generateQuoteFromData(fieldMapping);
+                document.getElementById('auto-quote-result-display').textContent = quote;
+                document.getElementById('auto-quote-output').style.display = 'block';
+
+                showStatus('auto-quote-final-status', `✅ 已使用第${rowIndex + 1}行資料生成報價單！`, 'success');
+
+            } catch (error) {
+                showStatus('auto-quote-final-status', `❌ 生成失敗: ${error.message}`, 'error');
+            }
+        }
 
         // 頁面載入時初始化網址下拉選單
         document.addEventListener('DOMContentLoaded', function() {
