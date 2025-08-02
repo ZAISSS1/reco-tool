@@ -674,11 +674,12 @@
         </div>
         
         <div class="tabs">
-            <button class="tab active" onclick="showTab('auto-quote')"><span class="desktop-text">🚀 客戶單⮕自動報價單</span><span class="mobile-text">自動報價</span></button>
-            <button class="tab" onclick="showTab('quote')"><span class="desktop-text">🚀 客戶單⮕報價單</span><span class="mobile-text">客戶報價</span></button>
-            <button class="tab" onclick="showTab('monthly')"><span class="desktop-text">🚀 報價單⮕包月任務單</span><span class="mobile-text">包月任務</span></button>
-            <button class="tab" onclick="showTab('single')"><span class="desktop-text">🚀 報價單⮕單趟任務單</span><span class="mobile-text">單趟任務</span></button>
-            <button class="tab" onclick="showTab('clean')"><span class="desktop-text">🚀 報價單⮕單次清潔任務單</span><span class="mobile-text">清潔任務</span></button>
+            <button class="tab active" onclick="showTab('auto-quote')"><span class="desktop-text">🚀 客戶⮕包月自動報價</span><span class="mobile-text">自動報價</span></button>
+            <button class="tab" onclick="showTab('single-quote')"><span class="desktop-text">🚀 客戶⮕單趟自動報價</span><span class="mobile-text">單趟報價</span></button>
+            <button class="tab" onclick="showTab('quote')"><span class="desktop-text">🚀 客戶⮕包月手動報價</span><span class="mobile-text">客戶報價</span></button>
+            <button class="tab" onclick="showTab('monthly')"><span class="desktop-text">🚀 報價⮕包月任務</span><span class="mobile-text">包月任務</span></button>
+            <button class="tab" onclick="showTab('single')"><span class="desktop-text">🚀 報價⮕單趟任務</span><span class="mobile-text">單趟任務</span></button>
+            <button class="tab" onclick="showTab('clean')"><span class="desktop-text">🚀 報價⮕單次清潔</span><span class="mobile-text">清潔任務</span></button>
 
         </div>
 
@@ -686,7 +687,7 @@
         <div id="auto-quote" class="tab-content active">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">🚀 客戶單⮕自動報價單</h3>
+                    <h3 style="margin: 0;">🚀 客戶⮕包月自動報價</h3>
                     <button class="clear-btn-small" onclick="clearAutoQuoteForm()" title="清空表單">×</button>
                 </div>
                 <div class="info-box">
@@ -695,8 +696,8 @@
                 
                 <div class="form-group">
                     <h4>🔗 Google試算表連結</h4>
-                    <div class="form-row">
-                        <div style="grid-column: span 3;">
+                    <div class="form-row" style="grid-template-columns: 2fr 1fr;">
+                        <div>
                             <label for="sheets-url">試算表網址：</label>
                             <input type="text" id="sheets-url" placeholder="請貼上Google試算表的共享連結" style="width: 100%;" onchange="saveUrlToHistory()">
                             <small style="color: #888; margin-top: 5px; display: block;">💡 提示：請確保試算表分享設定為「知道連結的使用者」</small>
@@ -707,6 +708,17 @@
                                 <option value="">選擇歷史網址</option>
                             </select>
                         </div>
+                    </div>
+                    
+                    <!-- 歷史網址管理 -->
+                    <div style="margin-top: 15px; text-align: center;">
+                        <button id="manage-urls-btn" onclick="toggleUrlManager()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 10px;">管理歷史網址</button>
+                        <button onclick="clearAllUrls()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">清空全部</button>
+                    </div>
+                    
+                    <div id="url-manager" style="display: none; margin-top: 15px; padding: 15px; background: #2a2a2a; border-radius: 8px; border: 1px solid #404040;">
+                        <h5 style="color: #fff; margin-bottom: 15px; text-align: center;">📝 歷史網址管理</h5>
+                        <!-- 網址列表將動態生成 -->
                     </div>
                 </div>
                 
@@ -892,7 +904,7 @@
         <div id="quote" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">🚀 客戶單⮕報價單</h3>
+                    <h3 style="margin: 0;">🚀 客戶⮕包月手動報價</h3>
                     <button class="clear-btn-small" onclick="clearQuoteForm()" title="清空表單">×</button>
                 </div>
                 <div class="info-box">
@@ -991,11 +1003,290 @@
             </div>
         </div>
 
+        <!-- 客戶單⮕單趟報價單 -->
+        <div id="single-quote" class="tab-content">
+            <div class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0;">🚀 客戶⮕單趟自動報價</h3>
+                    <button class="clear-btn-small" onclick="clearSingleQuoteForm()" title="清空表單">×</button>
+                </div>
+                <div class="info-box">
+                    💡 能偵測試算表中的地址資料，生成單趟垃圾代收報價單
+                </div>
+                
+                <div class="form-group">
+                    <h4>🔗 Google試算表連結</h4>
+                    <div class="form-row" style="grid-template-columns: 2fr 1fr;">
+                        <div>
+                            <label for="single-quote-sheets-url">試算表網址：</label>
+                            <input type="text" id="single-quote-sheets-url" placeholder="請貼上Google試算表的共享連結" style="width: 100%;" onchange="saveSingleQuoteUrlToHistory()">
+                            <small style="color: #888; margin-top: 5px; display: block;">💡 提示：請確保試算表分享設定為「知道連結的使用者」</small>
+                        </div>
+                        <div>
+                            <label for="single-quote-saved-urls">歷史網址：</label>
+                            <select id="single-quote-saved-urls" onchange="loadSingleQuoteSavedUrl()" style="width: 100%;">
+                                <option value="">選擇歷史網址</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 歷史網址管理 -->
+                    <div style="margin-top: 15px; text-align: center;">
+                        <button id="single-quote-manage-urls-btn" onclick="toggleSingleQuoteUrlManager()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 10px;">管理歷史網址</button>
+                        <button onclick="clearAllSingleQuoteUrls()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">清空全部</button>
+                    </div>
+                    
+                    <div id="single-quote-url-manager" style="display: none; margin-top: 15px; padding: 15px; background: #2a2a2a; border-radius: 8px; border: 1px solid #404040;">
+                        <h5 style="color: #fff; margin-bottom: 15px; text-align: center;">📝 歷史網址管理</h5>
+                        <!-- 網址列表將動態生成 -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h4>⚙️ 單趟垃圾代收設定</h4>
+                    
+                    <!-- 第一行：日期、時間、有無上樓、一樓費用、上樓費用 -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+                        <div>
+                            <label for="single-quote-date">🔥執行日期：</label>
+                            <input type="date" id="single-quote-date">
+                        </div>
+                        <div>
+                            <label for="single-quote-time">🔥執行時間：</label>
+                            <input type="text" id="single-quote-time" placeholder="例如：1200-1600前完成" value="">
+                        </div>
+                        <div>
+                            <label for="single-quote-upstairs-option">🪜有無上樓：</label>
+                            <select id="single-quote-upstairs-option">
+                                <option value="有/無/自選">有/無/自選</option>
+                                <option value="有">有</option>
+                                <option value="無">無</option>
+                                <option value="自選">自選</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-ground-fee-type">💰放置一樓代收費用：</label>
+                            <select id="single-quote-ground-fee-type" onchange="toggleGroundFeeInput()">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-upstairs-fee-type">💰上樓費用代收費用：</label>
+                            <select id="single-quote-upstairs-fee-type" onchange="toggleUpstairsFeeInput()">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 第二行：費用金額輸入 -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+                        <div></div> <!-- 空欄位 -->
+                        <div></div> <!-- 空欄位 -->
+                        <div></div> <!-- 空欄位 -->
+                        <div id="single-quote-ground-fee-input" style="display: none;">
+                            <label for="single-quote-ground-fee">金額：</label>
+                            <input type="number" id="single-quote-ground-fee" min="0" step="50" placeholder="300" value="">
+                        </div>
+                        <div id="single-quote-upstairs-fee-input" style="display: none;">
+                            <label for="single-quote-upstairs-fee">金額：</label>
+                            <input type="number" id="single-quote-upstairs-fee" min="0" step="50" placeholder="500" value="">
+                        </div>
+                    </div>
+                    
+                    <!-- 第三行：垃圾照片描述 1-5 -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+                        <div>
+                            <label for="single-quote-photo1-type">🗑️圖1描述：</label>
+                            <select id="single-quote-photo1-type" onchange="togglePhotoInput(1)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo2-type">🗑️圖2描述：</label>
+                            <select id="single-quote-photo2-type" onchange="togglePhotoInput(2)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo3-type">🗑️圖3描述：</label>
+                            <select id="single-quote-photo3-type" onchange="togglePhotoInput(3)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo4-type">🗑️圖4描述：</label>
+                            <select id="single-quote-photo4-type" onchange="togglePhotoInput(4)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo5-type">🗑️圖5描述：</label>
+                            <select id="single-quote-photo5-type" onchange="togglePhotoInput(5)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 第四行：照片描述輸入框 1-5 -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+                        <div id="single-quote-photo1-input" style="display: none;">
+                            <input type="text" id="single-quote-photo1" placeholder="例如：客廳垃圾袋" value="">
+                        </div>
+                        <div id="single-quote-photo2-input" style="display: none;">
+                            <input type="text" id="single-quote-photo2" placeholder="例如：廚房垃圾" value="">
+                        </div>
+                        <div id="single-quote-photo3-input" style="display: none;">
+                            <input type="text" id="single-quote-photo3" placeholder="例如：資源回收" value="">
+                        </div>
+                        <div id="single-quote-photo4-input" style="display: none;">
+                            <input type="text" id="single-quote-photo4" placeholder="例如：其他垃圾" value="">
+                        </div>
+                        <div id="single-quote-photo5-input" style="display: none;">
+                            <input type="text" id="single-quote-photo5" placeholder="例如：大型垃圾" value="">
+                        </div>
+                    </div>
+                    
+                    <!-- 第五行：垃圾照片描述 6-10 -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+                        <div>
+                            <label for="single-quote-photo6-type">🗑️圖6描述：</label>
+                            <select id="single-quote-photo6-type" onchange="togglePhotoInput(6)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo7-type">🗑️圖7描述：</label>
+                            <select id="single-quote-photo7-type" onchange="togglePhotoInput(7)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo8-type">🗑️圖8描述：</label>
+                            <select id="single-quote-photo8-type" onchange="togglePhotoInput(8)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo9-type">🗑️圖9描述：</label>
+                            <select id="single-quote-photo9-type" onchange="togglePhotoInput(9)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-photo10-type">🗑️圖10描述：</label>
+                            <select id="single-quote-photo10-type" onchange="togglePhotoInput(10)">
+                                <option value="none">無</option>
+                                <option value="manual">手動填寫</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 第六行：照片描述輸入框 6-10 -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
+                        <div id="single-quote-photo6-input" style="display: none;">
+                            <input type="text" id="single-quote-photo6" placeholder="例如：陽台垃圾" value="">
+                        </div>
+                        <div id="single-quote-photo7-input" style="display: none;">
+                            <input type="text" id="single-quote-photo7" placeholder="例如：房間垃圾" value="">
+                        </div>
+                        <div id="single-quote-photo8-input" style="display: none;">
+                            <input type="text" id="single-quote-photo8" placeholder="例如：浴室垃圾" value="">
+                        </div>
+                        <div id="single-quote-photo9-input" style="display: none;">
+                            <input type="text" id="single-quote-photo9" placeholder="例如：書房垃圾" value="">
+                        </div>
+                        <div id="single-quote-photo10-input" style="display: none;">
+                            <input type="text" id="single-quote-photo10" placeholder="例如：其他區域" value="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h4>📊 資料偵測設定</h4>
+                    <div class="form-row">
+                        <div>
+                            <label for="single-quote-update-mode">更新模式：</label>
+                            <select id="single-quote-update-mode">
+                                <option value="latest">最新一列</option>
+                                <option value="all">所有資料</option>
+                                <option value="last-5">最後5列</option>
+                                <option value="last-10">最後10列</option>
+                                <option value="last-20">最後20列</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="single-quote-sheet-name">工作表名稱：</label>
+                            <input type="text" id="single-quote-sheet-name" placeholder="例：報價資料" value="工作表1">
+                        </div>
+                        <div>
+                            <label for="single-quote-data-columns">資料欄位：</label>
+                            <select id="single-quote-data-columns">
+                                <option value="auto">自動偵測</option>
+                                <option value="A-H">A到H欄</option>
+                                <option value="A-J">A到J欄</option>
+                                <option value="A-L">A到L欄</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; margin: 25px 0;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
+                        <button onclick="fetchSingleQuoteGoogleSheetsData()" style="background: white; color: #333; border: 2px solid #ddd; width: 50px; height: 50px; font-size: 18px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" title="讀取試算表資料">
+                            ⇄
+                        </button>
+                        <button class="btn quote" onclick="generateSingleQuote()">∞</button>
+                        <button onclick="clearSingleQuoteForm()" style="background: #6c757d; color: white; border: none; width: 50px; height: 50px; font-size: 14px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: 600; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);" title="清空表單" onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(108, 117, 125, 0.4)'" onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0px)'; this.style.boxShadow='0 2px 5px rgba(108, 117, 125, 0.3)'">
+                            ×
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="single-quote-sheets-status" class="status" style="display: none;"></div>
+                
+                <div class="form-group" id="single-quote-detected-data" style="display: none;">
+                    <h4>📋 偵測資料</h4>
+                    <div id="single-quote-detected-data-preview" class="output-area" style="background: #2a2a2a; border: 1px solid #404040; border-radius: 8px; max-height: 300px; overflow-y: auto;"></div>
+                </div>
+                
+                <div class="form-group" id="single-quote-controls" style="display: none;">
+                    <h4>⚡ 自動生成</h4>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
+                            <div></div>
+                            <button class="btn quote" onclick="generateSingleQuote()">∞</button>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section" id="single-quote-output" style="display: none;">
+                    <h4>📄 單趟垃圾代收報價單</h4>
+                    <div class="output-area" id="single-quote-result-display"></div>
+                    <button class="copy-btn" onclick="copySingleQuote()">⧉</button>
+                    <div class="status" id="single-quote-copy-status"></div>
+                </div>
+                
+                <div id="single-quote-final-status" class="status" style="display: none;"></div>
+            </div>
+        </div>
+
         <!-- 報價單⮕包月任務單 -->
         <div id="monthly" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">🚀 報價單⮕包月任務單</h3>
+                    <h3 style="margin: 0;">🚀 報價⮕包月任務</h3>
                     <button class="clear-btn-small" onclick="clearMonthlyForm()" title="清空表單">×</button>
                 </div>
                 <div class="info-box">
@@ -1111,7 +1402,7 @@
         <div id="single" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">🚀 報價單⮕單趟任務單</h3>
+                    <h3 style="margin: 0;">🚀 報價⮕單趟任務</h3>
                     <button class="clear-btn-small" onclick="clearSingleForm()" title="清空表單">×</button>
                 </div>
                 <div class="info-box">
@@ -1230,7 +1521,7 @@
         <div id="clean" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">🚀 報價單⮕單次清潔任務單</h3>
+                    <h3 style="margin: 0;">🚀 報價⮕單次清潔</h3>
                     <button class="clear-btn-small" onclick="clearCleanForm()" title="清空表單">×</button>
                 </div>
                 <div class="info-box">
@@ -3433,54 +3724,1003 @@ ${weeklyFrequency}-${daysDisplay}
             });
         }
 
-        // 網址記憶功能
-        function saveUrlToHistory() {
-            const url = document.getElementById('sheets-url').value.trim();
-            if (!url || !url.includes('docs.google.com/spreadsheets')) {
+        // 單趟報價Google試算表讀取功能
+        async function fetchSingleQuoteGoogleSheetsData() {
+            const sheetsUrl = document.getElementById('single-quote-sheets-url').value.trim();
+            
+            if (!sheetsUrl) {
+                showStatus('single-quote-sheets-status', '❌ 請輸入Google試算表網址', 'error');
                 return;
             }
 
-            let savedUrls = JSON.parse(localStorage.getItem('sheetsUrls') || '[]');
+            if (!sheetsUrl.includes('docs.google.com/spreadsheets')) {
+                showStatus('single-quote-sheets-status', '❌ 請輸入有效的Google試算表連結', 'error');
+                return;
+            }
+
+            showStatus('single-quote-sheets-status', '🔄 正在載入試算表資料...', 'success');
+
+            try {
+                // 從URL中提取試算表ID
+                let spreadsheetId = '';
+                const urlMatch = sheetsUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+                if (urlMatch) {
+                    spreadsheetId = urlMatch[1];
+                } else {
+                    throw new Error('無法解析試算表ID，請確認URL格式正確');
+                }
+
+                // 構建CSV導出URL
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv`;
+                
+                let response;
+                try {
+                    response = await fetch(csvUrl, {
+                        mode: 'cors',
+                        headers: {
+                            'Accept': 'text/csv,text/plain'
+                        }
+                    });
+                } catch (corsError) {
+                    throw new Error('由於瀏覽器安全限制，無法直接讀取Google試算表。請確認：\n1. 試算表已設為「知道連結的使用者」可檢視\n2. 或手動複製貼上資料');
+                }
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('無法存取試算表，請確認分享設定為「知道連結的使用者」可檢視');
+                    } else if (response.status === 404) {
+                        throw new Error('找不到試算表，請確認網址正確');
+                    } else {
+                        throw new Error(`載入失敗 (錯誤代碼: ${response.status})`);
+                    }
+                }
+
+                const csvText = await response.text();
+                
+                if (!csvText || csvText.trim().length === 0) {
+                    throw new Error('試算表資料為空，請確認表格中有資料');
+                }
+
+                // CSV解析
+                const rows = parseCSV(csvText);
+                const filteredRows = rows.filter(row => row.some(cell => cell && cell.length > 0));
+                
+                if (filteredRows.length === 0) {
+                    throw new Error('試算表中沒有找到任何有效資料');
+                }
+
+                const updateMode = document.getElementById('single-quote-update-mode').value;
+                
+                // 取得表頭和資料行
+                const headers = filteredRows[0] || [];
+                const allDataRows = filteredRows.slice(1);
+                
+                let dataRows;
+                if (updateMode === 'latest') {
+                    dataRows = allDataRows.slice(-1);
+                } else if (updateMode === 'last-5') {
+                    dataRows = allDataRows.slice(-5);
+                } else if (updateMode === 'last-10') {
+                    dataRows = allDataRows.slice(-10);
+                } else if (updateMode === 'last-20') {
+                    dataRows = allDataRows.slice(-20);
+                } else {
+                    dataRows = allDataRows;
+                }
+
+                if (dataRows.length === 0) {
+                    throw new Error('沒有找到符合條件的資料行');
+                }
+
+                // 顯示資料預覽
+                displaySingleQuoteData(headers, dataRows);
+                showStatus('single-quote-sheets-status', `✅ 成功載入 ${dataRows.length} 行資料`, 'success');
+
+            } catch (error) {
+                console.error('載入資料失敗:', error);
+                showStatus('single-quote-sheets-status', `❌ ${error.message}`, 'error');
+            }
+        }
+
+        // 存儲試算表資料供選擇使用
+        let singleQuoteTableData = {
+            headers: [],
+            rows: []
+        };
+
+        function displaySingleQuoteData(headers, rows) {
+            // 儲存資料供後續使用
+            singleQuoteTableData.headers = headers;
+            singleQuoteTableData.rows = rows;
             
-            // 移除重複的網址
-            savedUrls = savedUrls.filter(savedUrl => savedUrl !== url);
+            const container = document.getElementById('single-quote-detected-data-preview');
             
-            // 添加到開頭
-            savedUrls.unshift(url);
+            let html = '<table style="width: 100%; border-collapse: collapse; font-size: 12px;">';
             
-            // 最多保留10個網址
-            if (savedUrls.length > 10) {
-                savedUrls = savedUrls.slice(0, 10);
+            // 表頭
+            html += '<tr style="background: #404040;">';
+            headers.forEach(header => {
+                html += `<th style="border: 1px solid #666; padding: 8px; text-align: left; color: #fff;">${header}</th>`;
+            });
+            html += '</tr>';
+            
+            // 資料行
+            rows.forEach((row, index) => {
+                const bgColor = index % 2 === 0 ? '#333333' : '#2a2a2a';
+                html += `<tr onclick="selectSingleQuoteRowForQuote(${index})" style="cursor: pointer; background: ${bgColor};" class="single-data-row" title="點擊選擇此資料作為報價單來源" onmouseover="this.style.background='#4a4a4a'" onmouseout="this.style.background='${bgColor}'">`;
+                row.forEach(cell => {
+                    html += `<td style="border: 1px solid #666; padding: 8px; color: #e0e0e0;">${cell || ''}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+            
+            document.getElementById('single-quote-detected-data').style.display = 'block';
+            document.getElementById('single-quote-controls').style.display = 'block';
+        }
+
+        let singleQuoteSelectedData = null;
+        let singleQuoteSelectedRowIndex = -1;
+
+        function selectSingleQuoteRowForQuote(rowIndex) {
+            console.log('selectSingleQuoteRow called with index:', rowIndex);
+            
+            // 使用存儲的資料而不是DOM查詢
+            const headers = singleQuoteTableData.headers;
+            const rows = singleQuoteTableData.rows;
+            const selectedRowData = rows[rowIndex];
+            
+            console.log('Available headers:', headers);
+            console.log('Selected row data:', selectedRowData);
+            
+            // 同時更新DOM高亮
+            const container = document.getElementById('single-quote-detected-data-preview');
+            const table = container.querySelector('table');
+            const dataRows = Array.from(table.querySelectorAll('tr')).slice(1);
+            const selectedRow = dataRows[rowIndex];
+            
+            if (selectedRow) {
+                // 清除之前的選擇高亮
+                dataRows.forEach(row => {
+                    row.style.border = '';
+                });
+                
+                // 高亮選中的行
+                selectedRow.style.border = '3px solid #FFD700';
             }
             
-            localStorage.setItem('sheetsUrls', JSON.stringify(savedUrls));
-            updateUrlDropdown();
+            // 解析選中行的資料
+            const fieldMapping = {};
+            headers.forEach((header, index) => {
+                fieldMapping[header] = selectedRowData[index] || '';
+            });
+            
+            // 智能欄位偵測
+            const detectedData = {
+                address: '',
+                lineName: '',
+                serviceTime: '',
+                weeklyFrequency: '',
+                serviceDays: '',
+                housingType: '',
+                trashBags: '',
+                recycleBags: ''
+            };
+            
+            // 偵測地址 - 擴展偵測條件
+            for (const [header, value] of Object.entries(fieldMapping)) {
+                if (header.includes('地址') || 
+                    (header.includes('收取') && header.includes('地址')) || 
+                    header.includes('區域+地址') || 
+                    header.includes('收取區域') ||
+                    header.includes('正確收取地址') ||
+                    header.includes('收取位置') ||
+                    header.includes('服務地址')) {
+                    detectedData.address = value;
+                    break;
+                }
+            }
+            
+            // 偵測LINE暱稱 - 擴展偵測條件
+            for (const [header, value] of Object.entries(fieldMapping)) {
+                if (header.includes('暱稱') || 
+                    header.includes('Line') || 
+                    header.includes('LINE') || 
+                    (header.includes('顯示') && header.includes('暱稱')) || 
+                    header.includes('Line顯示') ||
+                    header.includes('客戶暱稱') ||
+                    header.includes('用戶暱稱')) {
+                    detectedData.lineName = value;
+                    break;
+                }
+            }
+            
+            // 儲存選中的資料
+            singleQuoteSelectedData = detectedData;
+            singleQuoteSelectedRowIndex = rowIndex;
+            
+            console.log('Selected row field mapping:', fieldMapping);
+            console.log('Detected data:', detectedData);
+            
+            // 更新所有行樣式
+            const allRows = document.querySelectorAll('.single-data-row');
+            allRows.forEach((row, index) => {
+                if (index === rowIndex) {
+                    row.style.border = '3px solid #FFD700';
+                    row.style.background = '#4a4a00';
+                } else {
+                    row.style.border = '';
+                    row.style.background = index % 2 === 0 ? '#333333' : '#2a2a2a';
+                }
+            });
+            
+            // 顯示偵測結果狀態
+            let statusMsg = `✅ 已選擇第 ${rowIndex + 1} 行資料`;
+            if (detectedData.address) {
+                statusMsg += ` | 地址: ${detectedData.address.substring(0, 20)}...`;
+            }
+            if (detectedData.lineName) {
+                statusMsg += ` | 暱稱: ${detectedData.lineName}`;
+            }
+            
+            showStatus('single-quote-sheets-status', statusMsg, 'success');
+        }
+
+        // 日期轉換為包含星期幾的格式
+        function formatDateWithWeekday(dateString) {
+            if (!dateString) return '待確認';
+            
+            const date = new Date(dateString);
+            const weekdays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+            const weekday = weekdays[date.getDay()];
+            
+            // 格式化為 YYYY/MM/DD (星期X)
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            
+            return `${year}/${month}/${day} (${weekday})`;
+        }
+
+        // 時間格式轉換
+        function formatTime(timeString) {
+            if (!timeString || timeString.trim() === '') return '待確認';
+            
+            // 檢查是否為數字格式的時間 (如 1200-1300完成)
+            const timePattern = /(\d{3,4})-(\d{3,4})(.*)$/;
+            const match = timeString.match(timePattern);
+            
+            if (match) {
+                const startTime = match[1];
+                const endTime = match[2];
+                const suffix = match[3] || '';
+                
+                // 轉換時間格式
+                const formatHour = (time, isStart = false) => {
+                    const hour = parseInt(time.slice(0, -2));
+                    const minute = time.slice(-2);
+                    
+                    if (hour >= 12) {
+                        const displayHour = hour === 12 ? 12 : hour - 12;
+                        const period = isStart ? '下午 ' : '';
+                        return `${period}${displayHour}：${minute}`;
+                    } else {
+                        const displayHour = hour === 0 ? 12 : hour;
+                        const period = isStart ? '上午 ' : '';
+                        return `${period}${displayHour}：${minute}`;
+                    }
+                };
+                
+                const startHour = parseInt(startTime.slice(0, -2));
+                const endHour = parseInt(endTime.slice(0, -2));
+                
+                // 判斷時間段，只在開始時間顯示上午/下午
+                if (startHour >= 12 && endHour >= 12) {
+                    // 都是下午
+                    return `下午 ${formatHour(startTime, false)}-${formatHour(endTime, false)}${suffix}`;
+                } else if (startHour < 12 && endHour < 12) {
+                    // 都是上午
+                    return `上午 ${formatHour(startTime, false)}-${formatHour(endTime, false)}${suffix}`;
+                } else {
+                    // 跨越上午下午
+                    return `${formatHour(startTime, true)}-${formatHour(endTime, true)}${suffix}`;
+                }
+            }
+            
+            // 如果不是數字格式，直接返回原始文字
+            return timeString;
+        }
+
+        // 控制費用輸入框顯示/隱藏
+        function toggleGroundFeeInput() {
+            const type = document.getElementById('single-quote-ground-fee-type').value;
+            const input = document.getElementById('single-quote-ground-fee-input');
+            input.style.display = type === 'manual' ? 'block' : 'none';
+        }
+
+        function toggleUpstairsFeeInput() {
+            const type = document.getElementById('single-quote-upstairs-fee-type').value;
+            const input = document.getElementById('single-quote-upstairs-fee-input');
+            input.style.display = type === 'manual' ? 'block' : 'none';
+        }
+
+        // 控制照片描述輸入框顯示/隱藏
+        function togglePhotoInput(photoNumber) {
+            const type = document.getElementById(`single-quote-photo${photoNumber}-type`).value;
+            const input = document.getElementById(`single-quote-photo${photoNumber}-input`);
+            input.style.display = type === 'manual' ? 'block' : 'none';
+        }
+
+        // 生成單趟垃圾代收報價單
+        function generateSingleQuote() {
+            try {
+                // 獲取費用資料
+                const groundFeeType = document.getElementById('single-quote-ground-fee-type').value;
+                const upstairsFeeType = document.getElementById('single-quote-upstairs-fee-type').value;
+                
+                const groundFee = groundFeeType === 'manual' ? 
+                    (document.getElementById('single-quote-ground-fee').value || '300') : null;
+                const upstairsFee = upstairsFeeType === 'manual' ? 
+                    (document.getElementById('single-quote-upstairs-fee').value || '500') : null;
+                
+                const upstairsOption = document.getElementById('single-quote-upstairs-option').value || '有/無/自選';
+                const dateRaw = document.getElementById('single-quote-date').value;
+                const timeRaw = document.getElementById('single-quote-time').value;
+                
+                // 格式化日期和時間
+                const date = formatDateWithWeekday(dateRaw);
+                const time = formatTime(timeRaw);
+                
+                // 獲取照片描述 - 只收集有選擇手動填寫且有內容的
+                const photos = [];
+                for (let i = 1; i <= 10; i++) {
+                    const type = document.getElementById(`single-quote-photo${i}-type`).value;
+                    if (type === 'manual') {
+                        const content = document.getElementById(`single-quote-photo${i}`).value;
+                        if (content && content.trim() !== '') {
+                            photos.push(content.trim());
+                        }
+                    }
+                }
+
+                // 從選中的試算表資料中獲取地址和LINE暱稱
+                const address = singleQuoteSelectedData ? singleQuoteSelectedData.address : '';
+                const lineName = singleQuoteSelectedData ? singleQuoteSelectedData.lineName : '';
+                
+                console.log('Generate quote - Address:', address);
+                console.log('Generate quote - Line Name:', lineName);
+                console.log('singleQuoteSelectedData:', singleQuoteSelectedData);
+
+                // 生成報價單
+                const quote = generateSingleQuoteTemplate({
+                    groundFee,
+                    upstairsFee,
+                    upstairsOption,
+                    date,
+                    time,
+                    photos,
+                    address,
+                    lineName
+                });
+
+                // 顯示結果
+                document.getElementById('single-quote-result-display').textContent = quote;
+                document.getElementById('single-quote-output').style.display = 'block';
+                
+                showStatus('single-quote-copy-status', '✅ 單趟垃圾代收報價單已生成', 'success');
+
+            } catch (error) {
+                showStatus('single-quote-copy-status', `❌ 生成失敗: ${error.message}`, 'error');
+            }
+        }
+
+        // 單趟垃圾代收報價單範本
+        function generateSingleQuoteTemplate(data) {
+            const {groundFee, upstairsFee, upstairsOption, date, time, photos, address, lineName} = data;
+            
+            console.log('Template generation - Address:', address);
+            console.log('Template generation - Line Name:', lineName);
+            console.log('Template generation - Full data:', data);
+            
+            let quote = ``;
+
+            // 如果有LINE暱稱，顯示在最上方
+            if (lineName) {
+                quote += `LINE暱稱：${lineName}\n`;
+                console.log('Added line name to quote');
+            }
+            
+            // 如果有地址，顯示在暱稱下方
+            if (address) {
+                quote += `地址：${address}\n`;
+                console.log('Added address to quote');
+            }
+            
+            // 如果有住宅性質，從選中資料中取得
+            if (singleQuoteSelectedData && singleQuoteSelectedData.housingType) {
+                quote += `住宅性質：${singleQuoteSelectedData.housingType}\n`;
+                console.log('Added housing type to quote');
+            }
+            
+            // 如果有任何客戶資訊，添加分隔線，然後加上標題
+            if (lineName || address || (singleQuoteSelectedData && singleQuoteSelectedData.housingType)) {
+                quote += `\n------------------------------------\n\n🔥單趟垃圾代收🔥
+
+`;
+                console.log('Added separator line and title');
+            } else {
+                quote += `🔥單趟垃圾代收🔥
+
+`;
+            }
+            
+            quote += `🗑️垃圾資源🗑️：
+
+`;
+
+            // 添加照片描述 - 只顯示有內容的照片
+            if (photos && photos.length > 0) {
+                photos.forEach((photo, index) => {
+                    quote += `${index + 1}.圖${index + 1}：${photo}\n`;
+                });
+            }
+
+            quote += `
+
+
+（依照片主體代收）
+（範圍請劃線標示）
+（事業廢棄物拒收）
+（僅收一般生活垃圾/）
+（超量/超數/超趟/拒收）
+  (收款後拒改服務內容）
+
+☝️注意事項☝️
+1分錢1分服務
+合法代收方式
+互助互利互相
+
+🪜有無上樓：${upstairsOption}`;
+
+            // 只顯示有設定費用的方案
+            if (groundFee) {
+                quote += `
+
+方案1
+💰放置一樓代收費用：${groundFee}元`;
+            }
+            
+            if (upstairsFee) {
+                quote += `
+方案2
+💰上樓費用代收費用：${upstairsFee}元`;
+            }
+
+            quote += `
+
+🔥執行日期：${date}
+🔥執行時間：${time}
+
+✅上述同意請告知
+✅收款後無法退款 
+✅上述內容不更改
+✅再告知執行方案
+✅稍後開立繳費單
+✅20分內繳費完
+✅留下電話貴姓
+✅單趟預約完成
+✅選置放1樓者
+   (1)提供完整照片回傳
+   (2)上樓者無需回傳
+   (3)置放完畢即可離開
+   (4)代收完會回報`;
+
+            return quote;
+        }
+
+        // 複製單趟報價單
+        function copySingleQuote() {
+            const quoteText = document.getElementById('single-quote-result-display').textContent;
+            
+            if (!quoteText) {
+                showStatus('single-quote-copy-status', '❌ 沒有報價單可複製', 'error');
+                return;
+            }
+
+            navigator.clipboard.writeText(quoteText).then(() => {
+                showStatus('single-quote-copy-status', '✅ 單趟垃圾代收報價單已複製到剪貼簿', 'success');
+            }).catch(() => {
+                showStatus('single-quote-copy-status', '❌ 複製失敗，請手動選擇複製', 'error');
+            });
+        }
+
+        // 單趟報價歷史網址管理
+        function saveSingleQuoteUrlToHistory() {
+            const url = document.getElementById('single-quote-sheets-url').value.trim();
+            if (!url) return;
+            
+            let savedUrls = JSON.parse(localStorage.getItem('singleQuoteSavedUrls') || '[]');
+            
+            // 檢查是否已存在相同網址
+            const existingIndex = savedUrls.findIndex(item => (typeof item === 'string' ? item : item.url) === url);
+            
+            if (existingIndex === -1) {
+                // 新增網址，詢問自定義名稱
+                const customName = prompt('請為此網址設定一個自定義名稱（可選，直接按確定使用預設名稱）：', `單趟試算表 ${savedUrls.length + 1}`);
+                const urlData = {
+                    url: url,
+                    name: customName && customName.trim() !== '' ? customName.trim() : `單趟試算表 ${savedUrls.length + 1}`,
+                    dateAdded: new Date().toLocaleDateString('zh-TW')
+                };
+                
+                // 新增到最前面
+                savedUrls.unshift(urlData);
+                
+                // 保留最多10筆記錄
+                savedUrls = savedUrls.slice(0, 10);
+                
+                // 儲存到localStorage
+                localStorage.setItem('singleQuoteSavedUrls', JSON.stringify(savedUrls));
+                
+                showStatus('single-quote-sheets-status', `✅ 網址已儲存為「${urlData.name}」`, 'success');
+            } else {
+                // 網址已存在，移到最前面
+                const existingItem = savedUrls.splice(existingIndex, 1)[0];
+                savedUrls.unshift(existingItem);
+                localStorage.setItem('singleQuoteSavedUrls', JSON.stringify(savedUrls));
+                
+                const itemName = typeof existingItem === 'string' ? '單趟試算表' : existingItem.name;
+                showStatus('single-quote-sheets-status', `✅ 網址「${itemName}」已移至最上方`, 'success');
+            }
+            
+            // 更新下拉選單
+            updateSingleQuoteSavedUrlsDropdown();
+        }
+
+        function loadSingleQuoteSavedUrl() {
+            const select = document.getElementById('single-quote-saved-urls');
+            const selectedValue = select.value;
+            
+            if (selectedValue) {
+                document.getElementById('single-quote-sheets-url').value = selectedValue;
+                select.value = ''; // 清空選擇
+                
+                // 自動觸發儲存功能，將選取的網址移到最前面
+                saveSingleQuoteUrlToHistory();
+            }
+        }
+
+        function updateSingleQuoteSavedUrlsDropdown() {
+            const select = document.getElementById('single-quote-saved-urls');
+            const savedUrls = JSON.parse(localStorage.getItem('singleQuoteSavedUrls') || '[]');
+            
+            // 清空現有選項（保留第一個空選項）
+            select.innerHTML = '<option value="">選擇歷史網址</option>';
+            
+            // 加入儲存的網址
+            savedUrls.forEach((item, index) => {
+                const option = document.createElement('option');
+                
+                if (typeof item === 'string') {
+                    // 舊格式相容性
+                    option.value = item;
+                    option.textContent = `${index + 1}. ${item.length > 45 ? item.substring(0, 45) + '...' : item}`;
+                } else {
+                    // 新格式，顯示自定義名稱和日期
+                    option.value = item.url;
+                    option.textContent = `${index + 1}. ${item.name} (${item.dateAdded})`;
+                }
+                
+                select.appendChild(option);
+            });
+            
+            // 更新管理列表
+            updateSingleQuoteUrlManagerList();
+        }
+
+        function updateSingleQuoteUrlManagerList() {
+            const container = document.getElementById('single-quote-url-manager');
+            if (!container) return;
+            
+            const savedUrls = JSON.parse(localStorage.getItem('singleQuoteSavedUrls') || '[]');
+            
+            if (savedUrls.length === 0) {
+                container.innerHTML = '<div style="color: #888; text-align: center; padding: 20px;">暫無儲存的網址</div>';
+                return;
+            }
+            
+            let html = '<div style="max-height: 300px; overflow-y: auto;">';
+            savedUrls.forEach((item, index) => {
+                let displayText, fullUrl;
+                
+                if (typeof item === 'string') {
+                    // 舊格式相容性
+                    displayText = `${index + 1}. ${item}`;
+                    fullUrl = item;
+                } else {
+                    // 新格式，顯示自定義名稱和儲存日期
+                    displayText = `${index + 1}. ${item.name} (${item.dateAdded})`;
+                    fullUrl = item.url;
+                }
+                
+                html += `
+                    <div style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; background: #333; border-radius: 5px;">
+                        <div style="flex: 1; margin-right: 10px;">
+                            <div style="color: #fff; font-weight: bold; margin-bottom: 5px;">
+                                ${displayText}
+                            </div>
+                            <div style="color: #aaa; font-size: 11px; word-break: break-all;">
+                                ${fullUrl}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <button onclick="editSingleQuoteUrlName(${index})" style="background: #28a745; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">改名</button>
+                            <button onclick="editSingleQuoteUrl(${index})" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">編輯</button>
+                            <button onclick="deleteSingleQuoteUrl(${index})" style="background: #dc3545; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">刪除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+
+        function editSingleQuoteUrlName(index) {
+            const savedUrls = JSON.parse(localStorage.getItem('singleQuoteSavedUrls') || '[]');
+            if (index >= savedUrls.length) return;
+            
+            const item = savedUrls[index];
+            let currentName;
+            
+            if (typeof item === 'string') {
+                currentName = `單趟試算表 ${index + 1}`;
+                // 升級舊格式到新格式
+                savedUrls[index] = {
+                    url: item,
+                    name: currentName,
+                    dateAdded: new Date().toLocaleDateString('zh-TW')
+                };
+            } else {
+                currentName = item.name;
+            }
+            
+            const newName = prompt('編輯名稱：', currentName);
+            
+            if (newName && newName.trim() !== '' && newName.trim() !== currentName) {
+                savedUrls[index].name = newName.trim();
+                localStorage.setItem('singleQuoteSavedUrls', JSON.stringify(savedUrls));
+                updateSingleQuoteSavedUrlsDropdown();
+                showStatus('single-quote-sheets-status', '✅ 名稱已更新', 'success');
+            }
+        }
+
+        function editSingleQuoteUrl(index) {
+            const savedUrls = JSON.parse(localStorage.getItem('singleQuoteSavedUrls') || '[]');
+            if (index >= savedUrls.length) return;
+            
+            const item = savedUrls[index];
+            const oldUrl = typeof item === 'string' ? item : item.url;
+            const newUrl = prompt('編輯網址：', oldUrl);
+            
+            if (newUrl && newUrl.trim() !== '' && newUrl.trim() !== oldUrl) {
+                if (typeof item === 'string') {
+                    // 升級舊格式到新格式
+                    savedUrls[index] = {
+                        url: newUrl.trim(),
+                        name: `單趟試算表 ${index + 1}`,
+                        dateAdded: new Date().toLocaleDateString('zh-TW')
+                    };
+                } else {
+                    savedUrls[index].url = newUrl.trim();
+                }
+                
+                localStorage.setItem('singleQuoteSavedUrls', JSON.stringify(savedUrls));
+                updateSingleQuoteSavedUrlsDropdown();
+                showStatus('single-quote-sheets-status', '✅ 網址已更新', 'success');
+            }
+        }
+
+        function deleteSingleQuoteUrl(index) {
+            const savedUrls = JSON.parse(localStorage.getItem('singleQuoteSavedUrls') || '[]');
+            if (index >= savedUrls.length) return;
+            
+            const item = savedUrls[index];
+            const itemName = typeof item === 'string' ? '單趟試算表' : item.name;
+            
+            if (confirm(`確定要刪除「${itemName}」嗎？`)) {
+                savedUrls.splice(index, 1);
+                localStorage.setItem('singleQuoteSavedUrls', JSON.stringify(savedUrls));
+                updateSingleQuoteSavedUrlsDropdown();
+                showStatus('single-quote-sheets-status', `✅ 「${itemName}」已刪除`, 'success');
+            }
+        }
+
+        function clearAllSingleQuoteUrls() {
+            if (confirm('確定要清空所有歷史網址嗎？此操作無法復原。')) {
+                localStorage.removeItem('singleQuoteSavedUrls');
+                updateSingleQuoteSavedUrlsDropdown();
+                showStatus('single-quote-sheets-status', '✅ 所有歷史網址已清空', 'success');
+            }
+        }
+
+        function toggleSingleQuoteUrlManager() {
+            const manager = document.getElementById('single-quote-url-manager');
+            const button = document.getElementById('single-quote-manage-urls-btn');
+            
+            if (manager.style.display === 'none' || !manager.style.display) {
+                manager.style.display = 'block';
+                button.textContent = '隱藏歷史網址管理';
+                updateSingleQuoteUrlManagerList();
+            } else {
+                manager.style.display = 'none';
+                button.textContent = '管理歷史網址';
+            }
+        }
+
+        // 清空單趟報價表單
+        function clearSingleQuoteForm() {
+            // 清空Google試算表網址
+            document.getElementById('single-quote-sheets-url').value = '';
+            document.getElementById('single-quote-saved-urls').value = '';
+            
+            // 重置費用設定
+            document.getElementById('single-quote-ground-fee-type').value = 'none';
+            document.getElementById('single-quote-upstairs-fee-type').value = 'none';
+            document.getElementById('single-quote-ground-fee').value = '';
+            document.getElementById('single-quote-upstairs-fee').value = '';
+            document.getElementById('single-quote-ground-fee-input').style.display = 'none';
+            document.getElementById('single-quote-upstairs-fee-input').style.display = 'none';
+            
+            // 清空基本設定
+            document.getElementById('single-quote-upstairs-option').value = '有/無/自選';
+            document.getElementById('single-quote-date').value = '';
+            document.getElementById('single-quote-time').value = '';
+            
+            // 重置照片描述 (1-10)
+            for (let i = 1; i <= 10; i++) {
+                document.getElementById(`single-quote-photo${i}-type`).value = 'none';
+                document.getElementById(`single-quote-photo${i}`).value = '';
+                document.getElementById(`single-quote-photo${i}-input`).style.display = 'none';
+            }
+            
+            // 隱藏輸出區域
+            document.getElementById('single-quote-detected-data').style.display = 'none';
+            document.getElementById('single-quote-controls').style.display = 'none';
+            document.getElementById('single-quote-output').style.display = 'none';
+            document.getElementById('single-quote-sheets-status').style.display = 'none';
+            document.getElementById('single-quote-final-status').style.display = 'none';
+        }
+
+        // Removed duplicate DOMContentLoaded - using unified one below
+
+        // 包月自動報價歷史網址管理
+        function saveUrlToHistory() {
+            const url = document.getElementById('sheets-url').value.trim();
+            if (!url) return;
+            
+            let savedUrls = JSON.parse(localStorage.getItem('autoQuoteSavedUrls') || '[]');
+            
+            // 檢查是否已存在相同網址
+            const existingIndex = savedUrls.findIndex(item => (typeof item === 'string' ? item : item.url) === url);
+            
+            if (existingIndex === -1) {
+                // 新增網址，詢問自定義名稱
+                const customName = prompt('請為此網址設定一個自定義名稱（可選，直接按確定使用預設名稱）：', `試算表 ${savedUrls.length + 1}`);
+                const urlData = {
+                    url: url,
+                    name: customName && customName.trim() !== '' ? customName.trim() : `試算表 ${savedUrls.length + 1}`,
+                    dateAdded: new Date().toLocaleDateString('zh-TW')
+                };
+                
+                // 新增到最前面
+                savedUrls.unshift(urlData);
+                
+                // 保留最多10筆記錄
+                savedUrls = savedUrls.slice(0, 10);
+                
+                // 儲存到localStorage
+                localStorage.setItem('autoQuoteSavedUrls', JSON.stringify(savedUrls));
+                
+                showStatus('auto-sheets-status', `✅ 網址已儲存為「${urlData.name}」`, 'success');
+            } else {
+                // 網址已存在，移到最前面
+                const existingItem = savedUrls.splice(existingIndex, 1)[0];
+                savedUrls.unshift(existingItem);
+                localStorage.setItem('autoQuoteSavedUrls', JSON.stringify(savedUrls));
+                
+                const itemName = typeof existingItem === 'string' ? '試算表' : existingItem.name;
+                showStatus('auto-sheets-status', `✅ 網址「${itemName}」已移至最上方`, 'success');
+            }
+            
+            // 更新下拉選單
+            updateSavedUrlsDropdown();
         }
 
         function loadSavedUrl() {
-            const selectedUrl = document.getElementById('saved-urls').value;
-            if (selectedUrl) {
-                document.getElementById('sheets-url').value = selectedUrl;
+            const select = document.getElementById('saved-urls');
+            const selectedValue = select.value;
+            
+            if (selectedValue) {
+                document.getElementById('sheets-url').value = selectedValue;
+                select.value = ''; // 清空選擇
+                
+                // 自動觸發儲存功能，將選取的網址移到最前面
+                saveUrlToHistory();
             }
         }
 
-        function updateUrlDropdown() {
-            const savedUrls = JSON.parse(localStorage.getItem('sheetsUrls') || '[]');
-            const dropdown = document.getElementById('saved-urls');
+        function updateSavedUrlsDropdown() {
+            const select = document.getElementById('saved-urls');
+            const savedUrls = JSON.parse(localStorage.getItem('autoQuoteSavedUrls') || '[]');
             
-            // 清空現有選項
-            dropdown.innerHTML = '<option value="">選擇歷史網址</option>';
+            // 清空現有選項（保留第一個空選項）
+            select.innerHTML = '<option value="">選擇歷史網址</option>';
             
-            // 添加歷史網址
-            savedUrls.forEach((url, index) => {
+            // 加入儲存的網址
+            savedUrls.forEach((item, index) => {
                 const option = document.createElement('option');
-                option.value = url;
-                // 顯示簡化的網址描述
-                const urlId = url.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1] || 'unknown';
-                option.textContent = `試算表 ${index + 1} (${urlId.substring(0, 8)}...)`;
-                dropdown.appendChild(option);
+                
+                if (typeof item === 'string') {
+                    // 舊格式相容性
+                    option.value = item;
+                    option.textContent = `${index + 1}. ${item.length > 45 ? item.substring(0, 45) + '...' : item}`;
+                } else {
+                    // 新格式，包含自定義名稱
+                    option.value = item.url;
+                    option.textContent = `${index + 1}. ${item.name} (${item.dateAdded})`;
+                }
+                
+                select.appendChild(option);
             });
+            
+            // 更新管理列表
+            updateUrlManagerList();
         }
+
+        function updateUrlManagerList() {
+            const container = document.getElementById('url-manager');
+            if (!container) return;
+            
+            const savedUrls = JSON.parse(localStorage.getItem('autoQuoteSavedUrls') || '[]');
+            
+            if (savedUrls.length === 0) {
+                container.innerHTML = '<div style="color: #888; text-align: center; padding: 20px;">暫無儲存的網址</div>';
+                return;
+            }
+            
+            let html = '<div style="max-height: 300px; overflow-y: auto;">';
+            savedUrls.forEach((item, index) => {
+                let displayText, fullUrl;
+                
+                if (typeof item === 'string') {
+                    // 舊格式相容性
+                    displayText = `${index + 1}. ${item}`;
+                    fullUrl = item;
+                } else {
+                    // 新格式，顯示自定義名稱和儲存日期
+                    displayText = `${index + 1}. ${item.name} (${item.dateAdded})`;
+                    fullUrl = item.url;
+                }
+                
+                html += `
+                    <div style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; background: #333; border-radius: 5px;">
+                        <div style="flex: 1; margin-right: 10px;">
+                            <div style="color: #fff; font-weight: bold; margin-bottom: 5px;">
+                                ${displayText}
+                            </div>
+                            <div style="color: #aaa; font-size: 11px; word-break: break-all;">
+                                ${fullUrl}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <button onclick="editUrlName(${index})" style="background: #28a745; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">改名</button>
+                            <button onclick="editUrl(${index})" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">編輯</button>
+                            <button onclick="deleteUrl(${index})" style="background: #dc3545; color: white; border: none; padding: 5px 8px; border-radius: 3px; cursor: pointer; font-size: 11px;">刪除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+
+        function editUrlName(index) {
+            const savedUrls = JSON.parse(localStorage.getItem('autoQuoteSavedUrls') || '[]');
+            if (index >= savedUrls.length) return;
+            
+            const item = savedUrls[index];
+            let currentName;
+            
+            if (typeof item === 'string') {
+                currentName = `試算表 ${index + 1}`;
+                // 升級舊格式到新格式
+                savedUrls[index] = {
+                    url: item,
+                    name: currentName,
+                    dateAdded: new Date().toLocaleDateString('zh-TW')
+                };
+            } else {
+                currentName = item.name;
+            }
+            
+            const newName = prompt('編輯名稱：', currentName);
+            
+            if (newName && newName.trim() !== '' && newName.trim() !== currentName) {
+                savedUrls[index].name = newName.trim();
+                localStorage.setItem('autoQuoteSavedUrls', JSON.stringify(savedUrls));
+                updateSavedUrlsDropdown();
+                showStatus('auto-sheets-status', '✅ 名稱已更新', 'success');
+            }
+        }
+
+        function editUrl(index) {
+            const savedUrls = JSON.parse(localStorage.getItem('autoQuoteSavedUrls') || '[]');
+            if (index >= savedUrls.length) return;
+            
+            const item = savedUrls[index];
+            const oldUrl = typeof item === 'string' ? item : item.url;
+            const newUrl = prompt('編輯網址：', oldUrl);
+            
+            if (newUrl && newUrl.trim() !== '' && newUrl.trim() !== oldUrl) {
+                if (typeof item === 'string') {
+                    // 升級舊格式到新格式
+                    savedUrls[index] = {
+                        url: newUrl.trim(),
+                        name: `試算表 ${index + 1}`,
+                        dateAdded: new Date().toLocaleDateString('zh-TW')
+                    };
+                } else {
+                    savedUrls[index].url = newUrl.trim();
+                }
+                
+                localStorage.setItem('autoQuoteSavedUrls', JSON.stringify(savedUrls));
+                updateSavedUrlsDropdown();
+                showStatus('auto-sheets-status', '✅ 網址已更新', 'success');
+            }
+        }
+
+        function deleteUrl(index) {
+            const savedUrls = JSON.parse(localStorage.getItem('autoQuoteSavedUrls') || '[]');
+            if (index >= savedUrls.length) return;
+            
+            const item = savedUrls[index];
+            const itemName = typeof item === 'string' ? '試算表' : item.name;
+            
+            if (confirm(`確定要刪除「${itemName}」嗎？`)) {
+                savedUrls.splice(index, 1);
+                localStorage.setItem('autoQuoteSavedUrls', JSON.stringify(savedUrls));
+                updateSavedUrlsDropdown();
+                showStatus('auto-sheets-status', `✅ 「${itemName}」已刪除`, 'success');
+            }
+        }
+
+        function clearAllUrls() {
+            if (confirm('確定要清空所有歷史網址嗎？此操作無法復原。')) {
+                localStorage.removeItem('autoQuoteSavedUrls');
+                updateSavedUrlsDropdown();
+                showStatus('auto-sheets-status', '✅ 所有歷史網址已清空', 'success');
+            }
+        }
+
+        function toggleUrlManager() {
+            const manager = document.getElementById('url-manager');
+            const button = document.getElementById('manage-urls-btn');
+            
+            if (manager.style.display === 'none' || !manager.style.display) {
+                manager.style.display = 'block';
+                button.textContent = '隱藏歷史網址管理';
+                updateUrlManagerList();
+            } else {
+                manager.style.display = 'none';
+                button.textContent = '管理歷史網址';
+            }
+        }
+
+        // 網址記憶功能 (舊版已被新版取代)
 
 
 
@@ -3647,8 +4887,43 @@ ${weeklyFrequency}-${daysDisplay}
 
         // 頁面載入時初始化網址下拉選單
         document.addEventListener('DOMContentLoaded', function() {
-            updateUrlDropdown();
+            updateSingleQuoteSavedUrlsDropdown();
+            updateSavedUrlsDropdown();
+            showTab('auto-quote'); // Initialize first tab as active
         });
+
+        // Tab switching functionality
+        function showTab(tabId, clickedButton = null) {
+            // Hide all tab contents
+            const allTabs = document.querySelectorAll('.tab-content');
+            allTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            const allTabButtons = document.querySelectorAll('.tab');
+            allTabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Add active class to clicked button - use event.target if available
+            if (!clickedButton && typeof event !== 'undefined' && event.target) {
+                clickedButton = event.target;
+            }
+            if (!clickedButton) {
+                clickedButton = document.querySelector(`button[onclick*="${tabId}"]`);
+            }
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+            }
+        }
+
     </script>
 </body>
 </html>
