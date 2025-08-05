@@ -3304,6 +3304,8 @@ ${otherDetails}
                     recycleMax: document.getElementById('manual-recycle-max').value || '',
                     specialNotes: document.getElementById('manual-special-notes').value || ''
                 };
+                
+                console.log('Manual data collected:', manualData);
 
                 const fieldMapping = {};
                 console.log('Headers:', headers);
@@ -3350,7 +3352,7 @@ ${otherDetails}
                                 fieldMapping.weeklyFrequency = `一週趟數：${cellValue}趟`;
                             }
                         }
-                        // 保持原有的服務日邏輯
+                        // 保持原有的服務日邏輯，優先使用手動選擇的星期
                         fieldMapping.serviceDays = manualData.serviceDays;
                     } else if (lowerHeader.includes('時間')) {
                         // 優先使用手動輸入的時間，其次是試算表數據
@@ -3446,6 +3448,10 @@ ${otherDetails}
                 if (manualData.frequency) {
                     fieldMapping.frequency = manualData.frequency;
                 }
+                // 確保手動輸入的收取星期一定優先使用
+                if (manualData.serviceDays && manualData.serviceDays.trim() !== '') {
+                    fieldMapping.serviceDays = manualData.serviceDays;
+                }
                 // 確保手動輸入的樓層一定優先使用
                 if (manualData.floor && manualData.floor.trim() !== '') {
                     fieldMapping.floor = manualData.floor;
@@ -3458,6 +3464,8 @@ ${otherDetails}
                 if (manualData.serviceTime && manualData.serviceTime.trim() !== '') {
                     fieldMapping.serviceTime = manualData.serviceTime;
                 }
+                
+                console.log('Final fieldMapping with manual overrides:', fieldMapping);
 
                 const quote = generateQuoteFromData(fieldMapping);
                 
@@ -3629,9 +3637,18 @@ ${otherDetails}
                 weeklyFrequency = '一週趟數：2趟';
             }
             
+            // 如果沒有選擇服務星期，使用預設值
+            let finalDaysDisplay = daysDisplay;
+            if (!serviceDays || serviceDays.trim() === '') {
+                finalDaysDisplay = '週二、週五';
+            }
+            
+            // 最終格式：趟數-星期
+            const serviceSchedule = `${weeklyFrequency}-${finalDaysDisplay}`;
+            
             const quote = `${customerInfo}⛔報價資料⛔
 
-${weeklyFrequency}-${daysDisplay}
+${serviceSchedule}
    置放時間：${timeDisplay}
    置放樓層：${floorDisplay}
 
