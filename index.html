@@ -3082,33 +3082,65 @@ ${otherDetails}
             }
         }
 
-        // 改進的CSV解析函數
+        // 改進的CSV解析函數 - 修復多行標題問題
         function parseCSV(csvText) {
             const rows = [];
-            const lines = csvText.split('\n');
             
-            for (let line of lines) {
-                if (!line.trim()) continue;
+            console.log('CSV總行數:', csvText.split('\n').length);
+            console.log('CSV前500字符:', csvText.substring(0, 500));
+            
+            // 更強健的CSV解析 - 處理嵌入式換行符
+            let current = '';
+            let inQuotes = false;
+            let currentRow = [];
+            let i = 0;
+            
+            while (i < csvText.length) {
+                const char = csvText[i];
                 
-                const row = [];
-                let current = '';
-                let inQuotes = false;
-                
-                for (let i = 0; i < line.length; i++) {
-                    const char = line[i];
-                    
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
-                        row.push(current.trim());
-                        current = '';
+                if (char === '"') {
+                    if (inQuotes && i + 1 < csvText.length && csvText[i + 1] === '"') {
+                        // 處理雙引號轉義
+                        current += '"';
+                        i += 2;
+                        continue;
                     } else {
-                        current += char;
+                        inQuotes = !inQuotes;
                     }
+                } else if (char === ',' && !inQuotes) {
+                    currentRow.push(current.trim().replace(/^"|"$/g, ''));
+                    current = '';
+                } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    // 只有在不在引號內時才視為行結束
+                    if (current.trim() || currentRow.length > 0) {
+                        currentRow.push(current.trim().replace(/^"|"$/g, ''));
+                        if (currentRow.some(cell => cell.length > 0)) {
+                            rows.push(currentRow);
+                        }
+                        currentRow = [];
+                        current = '';
+                    }
+                } else if (char !== '\r') {
+                    // 在引號內時，保留換行符
+                    current += char;
                 }
                 
-                row.push(current.trim());
-                rows.push(row);
+                i++;
+            }
+            
+            // 處理最後一行
+            if (current.trim() || currentRow.length > 0) {
+                currentRow.push(current.trim().replace(/^"|"$/g, ''));
+                if (currentRow.some(cell => cell.length > 0)) {
+                    rows.push(currentRow);
+                }
+            }
+            
+            // 偵錯第一行的解析結果
+            if (rows.length > 0) {
+                console.log('標題行解析結果:', rows[0]);
+                console.log('標題行欄位數量:', rows[0].length);
+                console.log('前5個標題:', rows[0].slice(0, 5));
             }
             
             return rows;
@@ -3309,7 +3341,9 @@ ${otherDetails}
 
                 const fieldMapping = {};
                 console.log('Headers:', headers);
+                console.log('Headers length:', headers.length);
                 console.log('Latest row:', latestRow);
+                console.log('Latest row length:', latestRow.length);
                 
                 // 收集垃圾和資源的包數與容量數據
                 let trashData = { bags: '', volume: '' };
@@ -3320,10 +3354,13 @@ ${otherDetails}
                     const cellValue = latestRow[index];
                     console.log(`Processing header: "${header}" (${lowerHeader}) with value: "${cellValue}"`);
                     
+                    // 更精確的欄位偵測邏輯
                     if (lowerHeader.includes('line') || lowerHeader.includes('暱稱')) {
                         fieldMapping.lineName = cellValue;
-                    } else if (lowerHeader.includes('地址')) {
+                        console.log(`Detected LINE name: ${cellValue}`);
+                    } else if (header.includes('地址') || header.includes('區域') || (header.includes('收取') && (header.includes('地址') || header.includes('區域')))) {
                         fieldMapping.address = cellValue;
+                        console.log(`Detected address from header "${header}": ${cellValue}`);
                         
                         // 自動偵測地址中的樓層數字並填入樓層欄位（只在手動欄位為空時）
                         if (cellValue && (!manualData.floor || manualData.floor.trim() === '')) {
@@ -3337,8 +3374,9 @@ ${otherDetails}
                                 console.log(`No floor detected in address: ${cellValue}, keeping manual input`);
                             }
                         }
-                    } else if (lowerHeader.includes('住宅') || lowerHeader.includes('性質')) {
+                    } else if (header.includes('住宅') || header.includes('性質')) {
                         fieldMapping.housingType = cellValue;
+                        console.log(`Detected housing type from header "${header}": ${cellValue}`);
                     } else if (lowerHeader.includes('月費') || lowerHeader.includes('費用')) {
                         // 優先使用手動輸入的月費，其次是試算表數據
                         fieldMapping.monthlyFee = (manualData.monthlyFee && manualData.monthlyFee.trim() !== '') ? manualData.monthlyFee : cellValue;
