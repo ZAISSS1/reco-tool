@@ -9,6 +9,8 @@
     <link rel="shortcut icon" href="favicon.ico?v=2" type="image/x-icon">
     <link rel="apple-touch-icon" href="favicon.ico?v=2">
     <meta name="theme-color" content="#667eea">
+    <!-- SheetJS library for Excel processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -522,7 +524,124 @@
             border-radius: 8px;
         }
 
+        /* 登入界面樣式 */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-container {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            border: 1px solid #404040;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 28px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .login-input {
+            padding: 15px;
+            border: 2px solid #555555;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #333333;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-error {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e74c3c;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+
         @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .login-title {
+                font-size: 24px;
+            }
+            
+            .logout-btn {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
             .container {
                 margin: 5px;
                 border-radius: 10px;
@@ -665,9 +784,254 @@
                 gap: 10px !important;
             }
         }
+
+        /* 廠商價格表格樣式 */
+        .vendor-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #404040;
+        }
+
+        .vendor-table th {
+            background: linear-gradient(135deg, #333333 0%, #1a1a1a 100%);
+            color: #ffffff;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid #404040;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .vendor-table td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #404040;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            position: relative;
+        }
+
+        .vendor-table tr:hover td {
+            background: #333333;
+        }
+
+        .vendor-table td.editable {
+            cursor: text;
+            transition: all 0.3s ease;
+        }
+
+        .vendor-table td.editable:hover {
+            background: #404040 !important;
+            color: #ffffff;
+        }
+
+        .vendor-table td.editing {
+            background: #667eea !important;
+            color: #ffffff;
+        }
+
+        .vendor-table td input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            text-align: center;
+            padding: 5px;
+            font-size: inherit;
+        }
+
+        .vendor-table td input:focus {
+            outline: 2px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .delete-row-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-row-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .vendor-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .vendor-controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .vendor-controls .add-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .vendor-controls .add-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #1c7a6b 100%);
+            transform: translateY(-2px);
+        }
+
+        .vendor-controls .save-btn {
+            background: linear-gradient(135deg, #007bff 0%, #667eea 100%);
+        }
+
+        .vendor-controls .save-btn:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #5a67d8 100%);
+            transform: translateY(-2px);
+        }
+
+        .vendor-controls .export-btn {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        }
+
+        .vendor-controls .export-btn:hover {
+            background: linear-gradient(135deg, #5a359a 0%, #d91a72 100%);
+            transform: translateY(-2px);
+        }
+
+        .vendor-controls .import-btn {
+            background: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
+        }
+
+        .vendor-controls .import-btn:hover {
+            background: linear-gradient(135deg, #dc6502 0%, #d39e00 100%);
+            transform: translateY(-2px);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #404040;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .vendor-table {
+                font-size: 12px;
+            }
+            
+            .vendor-table th, .vendor-table td {
+                padding: 8px 5px;
+            }
+            
+            .vendor-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .vendor-controls button {
+                margin-bottom: 10px;
+            }
+        }
+
+        /* 競爭廠商比較樣式 */
+        .vendor-comparison-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #404040;
+            margin-top: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2a2a2a;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid #404040;
+            font-size: 14px;
+        }
+
+        .comparison-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #404040;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            font-size: 13px;
+        }
+
+        .comparison-table tr:hover td {
+            background: #333333;
+        }
+
+        .comparison-table .vendor-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .comparison-table .price-cell {
+            font-weight: 600;
+        }
+
+        .no-comparison {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-table {
+                font-size: 11px;
+            }
+            
+            .comparison-table th, .comparison-table td {
+                padding: 6px 4px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- 登入界面 -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-container">
+            <h2 class="login-title">🔒 系統登入</h2>
+            <form id="login-form" class="login-form">
+                <input type="text" id="username" class="login-input" placeholder="請輸入帳號" required>
+                <input type="password" id="password" class="login-input" placeholder="請輸入密碼" required>
+                <button type="submit" class="login-btn">登入系統</button>
+                <div id="login-error" class="login-error">帳號或密碼錯誤，請再試一次</div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 登出按鈕 -->
+    <button id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">登出</button>
     <div class="container">
         <div class="header">
             <h1>聯能永續-報價工具</h1>
@@ -680,6 +1044,7 @@
             <button class="tab" onclick="showTab('monthly')"><span class="desktop-text">🚀 報價⮕包月任務</span><span class="mobile-text">包月任務</span></button>
             <button class="tab" onclick="showTab('single')"><span class="desktop-text">🚀 報價⮕單趟任務</span><span class="mobile-text">單趟任務</span></button>
             <button class="tab" onclick="showTab('clean')"><span class="desktop-text">🚀 報價⮕單次清潔</span><span class="mobile-text">清潔任務</span></button>
+            <button class="tab" onclick="showTab('vendor-pricing')"><span class="desktop-text">💰 廠商價格</span><span class="mobile-text">廠商價格</span></button>
 
         </div>
 
@@ -889,6 +1254,12 @@
                     </div>
                 </div>
                 
+                <!-- 競爭廠商比較區塊 -->
+                <div class="output-section" id="vendor-comparison" style="display: none; margin-bottom: 20px;">
+                    <h4>📊 競爭廠商比較</h4>
+                    <div id="vendor-comparison-table" class="vendor-comparison-container"></div>
+                </div>
+
                 <div class="output-section" id="auto-quote-output" style="display: none;">
                     <h4>📄 自動生成的報價單</h4>
                     <div class="output-area" id="auto-quote-result-display"></div>
@@ -1669,6 +2040,53 @@
                     <button class="copy-btn" onclick="copyToClipboard('clean-result')">⧉</button>
                     <div class="status" id="clean-status"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 廠商價格頁面 -->
+        <div id="vendor-pricing" class="tab-content">
+            <div class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0;">💰 廠商價格管理</h3>
+                </div>
+                <div class="info-box">
+                    💡 管理競爭廠商的價格資訊，支援直接編輯、新增刪除、資料儲存與匯出功能
+                </div>
+                
+                <!-- 控制按鈕 -->
+                <div class="vendor-controls">
+                    <button class="add-btn" onclick="addVendorRow()">➕ 新增廠商</button>
+                    <button class="save-btn" onclick="saveVendorData()">💾 儲存資料</button>
+                    <button class="export-btn" onclick="exportVendorData()">📤 匯出Excel</button>
+                    <button class="import-btn" onclick="document.getElementById('import-file').click()">📥 匯入Excel</button>
+                    <input type="file" id="import-file" class="file-input" accept=".xlsx,.xls" onchange="importVendorData(event)">
+                </div>
+                
+                <!-- 資料表格 -->
+                <div class="table-container">
+                    <table class="vendor-table" id="vendor-table">
+                        <thead>
+                            <tr>
+                                <th>廠商名稱</th>
+                                <th>方案名稱</th>
+                                <th>週次數</th>
+                                <th>他行週總量</th>
+                                <th>我方換算-14</th>
+                                <th>我方換算-25</th>
+                                <th>原價</th>
+                                <th>1月優</th>
+                                <th>3月優</th>
+                                <th>6月優</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vendor-table-body">
+                            <!-- 資料將通過JavaScript動態生成 -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="status" id="vendor-status" style="margin-top: 20px;"></div>
             </div>
         </div>
 
@@ -2939,6 +3357,10 @@ ${otherDetails}
 
         // 自動報價單相關函數
         let autoQuoteData = null;
+        
+        // 存儲用戶選中的資料行
+        let selectedAutoQuoteData = null;
+        let selectedAutoQuoteRowIndex = -1;
 
         function clearAutoQuoteForm() {
             // 清空Google試算表網址
@@ -2970,6 +3392,8 @@ ${otherDetails}
             
             // 清空數據
             autoQuoteData = null;
+            selectedAutoQuoteData = null;
+            selectedAutoQuoteRowIndex = -1;
         }
 
         async function fetchGoogleSheetsData() {
@@ -3291,7 +3715,7 @@ ${otherDetails}
             }
 
             data.rows.forEach((row, index) => {
-                html += `<tr onclick="selectRowForQuote(${index})" style="cursor: pointer; background: ${index % 2 === 0 ? '#2a2a2a' : '#333333'};" class="data-row" title="點擊選擇此資料作為報價單來源" onmouseover="this.style.background='#4a4a4a'" onmouseout="this.style.background='${index % 2 === 0 ? '#2a2a2a' : '#333333'}'">`;
+                html += `<tr onclick="selectAutoQuoteRowForQuote(${index})" style="cursor: pointer; background: ${index % 2 === 0 ? '#2a2a2a' : '#333333'};" class="auto-data-row" title="點擊選擇此資料作為報價單來源" onmouseover="this.style.background='#4a4a4a'" onmouseout="this.style.background='${index % 2 === 0 ? '#2a2a2a' : '#333333'}'">`;
                 row.forEach(cell => {
                     html += `<td style="border: 1px solid #666; padding: 8px;">${cell}</td>`;
                 });
@@ -3302,7 +3726,73 @@ ${otherDetails}
             preview.innerHTML = html;
             
             document.getElementById('auto-detected-data').style.display = 'block';
+            document.getElementById('auto-quote-controls').style.display = 'none'; // 先隱藏生成按鈕，需要選擇資料後才顯示
+        }
+        
+        // 選擇包月自動報價資料行
+        function selectAutoQuoteRowForQuote(rowIndex) {
+            console.log('selectAutoQuoteRowForQuote called with index:', rowIndex);
+            
+            if (!autoQuoteData || !autoQuoteData.rows || rowIndex >= autoQuoteData.rows.length) {
+                console.error('Invalid row index or data not available');
+                return;
+            }
+            
+            const headers = autoQuoteData.headers;
+            const selectedRowData = autoQuoteData.rows[rowIndex];
+            
+            console.log('Available headers:', headers);
+            console.log('Selected row data:', selectedRowData);
+            
+            // 更新選中行的視覺效果
+            const allRows = document.querySelectorAll('.auto-data-row');
+            allRows.forEach((row, index) => {
+                if (index === rowIndex) {
+                    row.style.border = '3px solid #FFD700';
+                    row.style.background = '#4a4a00';
+                } else {
+                    row.style.border = '';
+                    row.style.background = index % 2 === 0 ? '#2a2a2a' : '#333333';
+                }
+            });
+            
+            // 儲存選中的資料
+            selectedAutoQuoteData = selectedRowData;
+            selectedAutoQuoteRowIndex = rowIndex;
+            
+            // 顯示生成按鈕
             document.getElementById('auto-quote-controls').style.display = 'block';
+            
+            // 偵測並預覽選中資料的關鍵資訊
+            const previewData = {};
+            headers.forEach((header, index) => {
+                const cellValue = selectedRowData[index];
+                const lowerHeader = header.toLowerCase();
+                
+                if (lowerHeader.includes('line') || lowerHeader.includes('暱稱')) {
+                    previewData.lineName = cellValue;
+                } else if (header.includes('地址') || header.includes('區域')) {
+                    previewData.address = cellValue;
+                } else if (lowerHeader.includes('月費') || lowerHeader.includes('費用')) {
+                    previewData.monthlyFee = cellValue;
+                } else if (header.includes('住宅') || header.includes('性質')) {
+                    previewData.housingType = cellValue;
+                }
+            });
+            
+            // 顯示選擇狀態
+            let statusMsg = `✅ 已選擇第 ${rowIndex + 1} 行資料`;
+            if (previewData.lineName) {
+                statusMsg += ` | 客戶: ${previewData.lineName}`;
+            }
+            if (previewData.address) {
+                statusMsg += ` | 地址: ${previewData.address.substring(0, 15)}...`;
+            }
+            if (previewData.monthlyFee) {
+                statusMsg += ` | 月費: ${previewData.monthlyFee}元`;
+            }
+            
+            showStatus('auto-sheets-status', statusMsg, 'success');
         }
 
         function generateAutoQuote() {
@@ -3310,11 +3800,16 @@ ${otherDetails}
                 showStatus('auto-quote-final-status', '❌ 請先載入試算表資料', 'error');
                 return;
             }
+            
+            if (selectedAutoQuoteData === null || selectedAutoQuoteRowIndex === -1) {
+                showStatus('auto-quote-final-status', '❌ 請先點擊選擇要用於生成報價單的資料行', 'error');
+                return;
+            }
 
             showStatus('auto-quote-final-status', '🔄 正在生成自動報價單...', 'success');
 
             try {
-                const latestRow = autoQuoteData.rows[autoQuoteData.rows.length - 1];
+                const selectedRow = selectedAutoQuoteData;
                 const headers = autoQuoteData.headers;
                 
                 // 先獲取手動輸入的資料
@@ -3342,8 +3837,8 @@ ${otherDetails}
                 const fieldMapping = {};
                 console.log('Headers:', headers);
                 console.log('Headers length:', headers.length);
-                console.log('Latest row:', latestRow);
-                console.log('Latest row length:', latestRow.length);
+                console.log('Selected row:', selectedRow);
+                console.log('Selected row length:', selectedRow.length);
                 
                 // 收集垃圾和資源的包數與容量數據
                 let trashData = { bags: '', volume: '' };
@@ -3351,7 +3846,7 @@ ${otherDetails}
                 
                 headers.forEach((header, index) => {
                     const lowerHeader = header.toLowerCase();
-                    const cellValue = latestRow[index];
+                    const cellValue = selectedRow[index];
                     console.log(`Processing header: "${header}" (${lowerHeader}) with value: "${cellValue}"`);
                     
                     // 更精確的欄位偵測邏輯
@@ -3504,6 +3999,9 @@ ${otherDetails}
                 }
                 
                 console.log('Final fieldMapping with manual overrides:', fieldMapping);
+
+                // 生成競爭廠商比較
+                generateVendorComparison(fieldMapping);
 
                 const quote = generateQuoteFromData(fieldMapping);
                 
@@ -4948,7 +5446,747 @@ ${serviceSchedule}
             updateSingleQuoteSavedUrlsDropdown();
             updateSavedUrlsDropdown();
             showTab('auto-quote'); // Initialize first tab as active
+            loadVendorData(); // 載入廠商價格資料
         });
+
+        // ========== 廠商價格管理功能 ==========
+        
+        // 廠商價格資料
+        const defaultVendorData = [
+            // 我來科技
+            {
+                vendorName: "我來科技",
+                planName: "小資方案",
+                weeklyFreq: "1",
+                otherVolume: "22X2",
+                ourConvert14: "25X1+25X1",
+                ourConvert25: "14X2+14X2",
+                originalPrice: "480",
+                discount1m: "470",
+                discount3m: "",
+                discount6m: ""
+            },
+            {
+                vendorName: "我來科技",
+                planName: "家庭方案",
+                weeklyFreq: "2",
+                otherVolume: "22X4",
+                ourConvert14: "25X2+25X2",
+                ourConvert25: "14X4+14X4",
+                originalPrice: "980",
+                discount1m: "960",
+                discount3m: "",
+                discount6m: ""
+            },
+            {
+                vendorName: "我來科技",
+                planName: "家庭方案",
+                weeklyFreq: "3",
+                otherVolume: "22X6",
+                ourConvert14: "25X3+25X3",
+                ourConvert25: "14X6+14X6",
+                originalPrice: "1,480",
+                discount1m: "1,450",
+                discount3m: "",
+                discount6m: ""
+            },
+            // 垃可
+            {
+                vendorName: "垃可",
+                planName: "小資方案",
+                weeklyFreq: "1",
+                otherVolume: "30X1",
+                ourConvert14: "14X1+14X1",
+                ourConvert25: "25X1",
+                originalPrice: "380",
+                discount1m: "無",
+                discount3m: "361",
+                discount6m: "342"
+            },
+            {
+                vendorName: "垃可",
+                planName: "小資方案",
+                weeklyFreq: "2",
+                otherVolume: "30X2",
+                ourConvert14: "14X2+14X2",
+                ourConvert25: "25X1+25X1",
+                originalPrice: "760",
+                discount1m: "無",
+                discount3m: "722",
+                discount6m: "684"
+            },
+            {
+                vendorName: "垃可",
+                planName: "小資方案",
+                weeklyFreq: "3",
+                otherVolume: "30X3",
+                ourConvert14: "14X3+14X3",
+                ourConvert25: "25X2+25X1",
+                originalPrice: "1,140",
+                discount1m: "無",
+                discount3m: "1,083",
+                discount6m: "1,026"
+            },
+            {
+                vendorName: "垃可",
+                planName: "小資方案",
+                weeklyFreq: "4",
+                otherVolume: "30X4",
+                ourConvert14: "14X4+14X4",
+                ourConvert25: "25X2+25X2",
+                originalPrice: "1,440",
+                discount1m: "無",
+                discount3m: "1,368",
+                discount6m: "1,296"
+            },
+            {
+                vendorName: "垃可",
+                planName: "小資方案",
+                weeklyFreq: "5",
+                otherVolume: "30X5",
+                ourConvert14: "14X5+14X5",
+                ourConvert25: "25X3+25X2",
+                originalPrice: "1,800",
+                discount1m: "無",
+                discount3m: "1,710",
+                discount6m: "1,620"
+            },
+            {
+                vendorName: "垃可",
+                planName: "家庭方案",
+                weeklyFreq: "1",
+                otherVolume: "60X1",
+                ourConvert14: "14X2+14X2",
+                ourConvert25: "25X1+25X1",
+                originalPrice: "560",
+                discount1m: "無",
+                discount3m: "532",
+                discount6m: "504"
+            },
+            {
+                vendorName: "垃可",
+                planName: "家庭方案",
+                weeklyFreq: "2",
+                otherVolume: "60X2",
+                ourConvert14: "14X4+14X4",
+                ourConvert25: "25X2+25X2",
+                originalPrice: "1,120",
+                discount1m: "無",
+                discount3m: "1,064",
+                discount6m: "1,008"
+            },
+            {
+                vendorName: "垃可",
+                planName: "家庭方案",
+                weeklyFreq: "3",
+                otherVolume: "60X3",
+                ourConvert14: "14X6+14X6",
+                ourConvert25: "25X4+25X2",
+                originalPrice: "1,680",
+                discount1m: "無",
+                discount3m: "1,596",
+                discount6m: "1,512"
+            },
+            {
+                vendorName: "垃可",
+                planName: "家庭方案",
+                weeklyFreq: "4",
+                otherVolume: "60X4",
+                ourConvert14: "14X8+14X8",
+                ourConvert25: "25X4+25X4",
+                originalPrice: "2,160",
+                discount1m: "無",
+                discount3m: "2,052",
+                discount6m: "1,944"
+            },
+            {
+                vendorName: "垃可",
+                planName: "家庭方案",
+                weeklyFreq: "5",
+                otherVolume: "60X5",
+                ourConvert14: "14X10+14X10",
+                ourConvert25: "25X6+25X4",
+                originalPrice: "2,700",
+                discount1m: "無",
+                discount3m: "2,565",
+                discount6m: "2,430"
+            },
+            {
+                vendorName: "垃可",
+                planName: "商務方案",
+                weeklyFreq: "1",
+                otherVolume: "76X1",
+                ourConvert14: "33X1+33X1",
+                ourConvert25: "25X2+25X1",
+                originalPrice: "800",
+                discount1m: "無",
+                discount3m: "760",
+                discount6m: "720"
+            },
+            {
+                vendorName: "垃可",
+                planName: "商務方案",
+                weeklyFreq: "2",
+                otherVolume: "76X2",
+                ourConvert14: "33X2+33X2",
+                ourConvert25: "25X4+25X2",
+                originalPrice: "1,600",
+                discount1m: "無",
+                discount3m: "1,520",
+                discount6m: "1,440"
+            },
+            {
+                vendorName: "垃可",
+                planName: "商務方案",
+                weeklyFreq: "3",
+                otherVolume: "76X3",
+                ourConvert14: "33X3+33X3",
+                ourConvert25: "25X6+25X3",
+                originalPrice: "2,400",
+                discount1m: "無",
+                discount3m: "2,280",
+                discount6m: "2,160"
+            },
+            {
+                vendorName: "垃可",
+                planName: "商務方案",
+                weeklyFreq: "4",
+                otherVolume: "76X4",
+                ourConvert14: "33X4+33X4",
+                ourConvert25: "25X8+25X4",
+                originalPrice: "3,040",
+                discount1m: "無",
+                discount3m: "2,888",
+                discount6m: "2,736"
+            },
+            {
+                vendorName: "垃可",
+                planName: "商務方案",
+                weeklyFreq: "5",
+                otherVolume: "76X5",
+                ourConvert14: "33X5+33X5",
+                ourConvert25: "25X10+25X5",
+                originalPrice: "3,800",
+                discount1m: "無",
+                discount3m: "3,610",
+                discount6m: "3,420"
+            },
+            {
+                vendorName: "垃可",
+                planName: "企業方案",
+                weeklyFreq: "1",
+                otherVolume: "152X1",
+                ourConvert14: "14X6+14X6",
+                ourConvert25: "25X3+25X3",
+                originalPrice: "1,080",
+                discount1m: "無",
+                discount3m: "1,026",
+                discount6m: "972"
+            },
+            {
+                vendorName: "垃可",
+                planName: "企業方案",
+                weeklyFreq: "2",
+                otherVolume: "152X2",
+                ourConvert14: "14X12+14X12",
+                ourConvert25: "25X6+25X6",
+                originalPrice: "2,160",
+                discount1m: "無",
+                discount3m: "2,052",
+                discount6m: "1,944"
+            },
+            {
+                vendorName: "垃可",
+                planName: "企業方案",
+                weeklyFreq: "3",
+                otherVolume: "152X3",
+                ourConvert14: "14X18+14X18",
+                ourConvert25: "25X9+25X9",
+                originalPrice: "3,240",
+                discount1m: "無",
+                discount3m: "3,078",
+                discount6m: "2,916"
+            },
+            {
+                vendorName: "垃可",
+                planName: "企業方案",
+                weeklyFreq: "4",
+                otherVolume: "152X4",
+                ourConvert14: "14X24+14X24",
+                ourConvert25: "25X12+25X12",
+                originalPrice: "4,160",
+                discount1m: "無",
+                discount3m: "3,952",
+                discount6m: "3,744"
+            },
+            {
+                vendorName: "垃可",
+                planName: "企業方案",
+                weeklyFreq: "5",
+                otherVolume: "152X5",
+                ourConvert14: "14X30+14X30",
+                ourConvert25: "25X15+25X15",
+                originalPrice: "5,200",
+                discount1m: "無",
+                discount3m: "4,940",
+                discount6m: "4,680"
+            },
+            // 信義垃圾
+            {
+                vendorName: "信義垃圾",
+                planName: "小資方案",
+                weeklyFreq: "3",
+                otherVolume: "30X3",
+                ourConvert14: "14X3+14X3",
+                ourConvert25: "25X2+25X1",
+                originalPrice: "361",
+                discount1m: "無",
+                discount3m: "1,083",
+                discount6m: "無"
+            },
+            {
+                vendorName: "信義垃圾",
+                planName: "小資方案",
+                weeklyFreq: "3",
+                otherVolume: "30X3",
+                ourConvert14: "14X3+14X3",
+                ourConvert25: "25X2+25X1",
+                originalPrice: "342",
+                discount1m: "無",
+                discount3m: "無",
+                discount6m: "2,052"
+            },
+            {
+                vendorName: "信義垃圾",
+                planName: "家庭方案",
+                weeklyFreq: "3",
+                otherVolume: "60X3",
+                ourConvert14: "14X6+14X6",
+                ourConvert25: "25X3+25X3",
+                originalPrice: "532",
+                discount1m: "無",
+                discount3m: "1,596",
+                discount6m: "無"
+            },
+            {
+                vendorName: "信義垃圾",
+                planName: "家庭方案",
+                weeklyFreq: "3",
+                otherVolume: "60X3",
+                ourConvert14: "14X6+14X6",
+                ourConvert25: "25X3+25X3",
+                originalPrice: "504",
+                discount1m: "無",
+                discount3m: "無",
+                discount6m: "3,024"
+            },
+            // 大台北收垃圾
+            {
+                vendorName: "大台北收垃圾",
+                planName: "1次方案",
+                weeklyFreq: "1",
+                otherVolume: "25X1+25X1",
+                ourConvert14: "14X2+14X2",
+                ourConvert25: "25X1+25X1",
+                originalPrice: "600",
+                discount1m: "無",
+                discount3m: "無",
+                discount6m: "無"
+            },
+            {
+                vendorName: "大台北收垃圾",
+                planName: "2次方案",
+                weeklyFreq: "2",
+                otherVolume: "25X2+25X2",
+                ourConvert14: "14X4+14X4",
+                ourConvert25: "25X2+25X2",
+                originalPrice: "800",
+                discount1m: "無",
+                discount3m: "無",
+                discount6m: "無"
+            },
+            {
+                vendorName: "大台北收垃圾",
+                planName: "3次方案",
+                weeklyFreq: "3",
+                otherVolume: "25X3+25X3",
+                ourConvert14: "14X6+14X6",
+                ourConvert25: "25X3+25X3",
+                originalPrice: "1100",
+                discount1m: "無",
+                discount3m: "無",
+                discount6m: "無"
+            }
+        ];
+
+        // 載入廠商資料
+        function loadVendorData() {
+            const savedData = localStorage.getItem('vendorPricingData');
+            let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            renderVendorTable(vendorData);
+        }
+
+        // 渲染廠商表格
+        function renderVendorTable(data) {
+            const tbody = document.getElementById('vendor-table-body');
+            tbody.innerHTML = '';
+            
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'vendorName')">${row.vendorName}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'planName')">${row.planName}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'weeklyFreq')">${row.weeklyFreq}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'otherVolume')">${row.otherVolume}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'ourConvert14')">${row.ourConvert14}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'ourConvert25')">${row.ourConvert25}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'originalPrice')">${row.originalPrice}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'discount1m')">${row.discount1m}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'discount3m')">${row.discount3m}</td>
+                    <td class="editable" onclick="makeEditable(this, ${index}, 'discount6m')">${row.discount6m}</td>
+                    <td><button class="delete-row-btn" onclick="deleteVendorRow(${index})">🗑️ 刪除</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 使儲存格可編輯
+        function makeEditable(cell, rowIndex, field) {
+            if (cell.querySelector('input')) return; // 已經在編輯中
+            
+            const currentValue = cell.textContent;
+            cell.classList.add('editing');
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+            input.style.width = '100%';
+            
+            // 當失去焦點或按下 Enter 時保存
+            input.onblur = () => saveCell(cell, input, rowIndex, field);
+            input.onkeypress = (e) => {
+                if (e.key === 'Enter') {
+                    saveCell(cell, input, rowIndex, field);
+                }
+            };
+            
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+        }
+
+        // 保存儲存格編輯
+        function saveCell(cell, input, rowIndex, field) {
+            const newValue = input.value.trim();
+            const savedData = localStorage.getItem('vendorPricingData');
+            let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            
+            if (rowIndex < vendorData.length) {
+                vendorData[rowIndex][field] = newValue;
+                localStorage.setItem('vendorPricingData', JSON.stringify(vendorData));
+            }
+            
+            cell.classList.remove('editing');
+            cell.textContent = newValue;
+            cell.onclick = () => makeEditable(cell, rowIndex, field);
+            
+            showVendorStatus('✅ 資料已更新', 'success');
+        }
+
+        // 新增廠商資料列
+        function addVendorRow() {
+            const savedData = localStorage.getItem('vendorPricingData');
+            let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            
+            const newRow = {
+                vendorName: "新廠商",
+                planName: "新方案", 
+                weeklyFreq: "1次",
+                otherVolume: "0L",
+                ourConvert14: "0包",
+                ourConvert25: "0包",
+                originalPrice: "0",
+                discount1m: "0",
+                discount3m: "0", 
+                discount6m: "0"
+            };
+            
+            vendorData.push(newRow);
+            localStorage.setItem('vendorPricingData', JSON.stringify(vendorData));
+            renderVendorTable(vendorData);
+            showVendorStatus('✅ 已新增廠商資料', 'success');
+        }
+
+        // 刪除廠商資料列  
+        function deleteVendorRow(index) {
+            const savedData = localStorage.getItem('vendorPricingData');
+            let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            
+            if (index >= 0 && index < vendorData.length) {
+                const deletedVendor = vendorData[index].vendorName;
+                vendorData.splice(index, 1);
+                localStorage.setItem('vendorPricingData', JSON.stringify(vendorData));
+                renderVendorTable(vendorData);
+                showVendorStatus(`✅ 已刪除「${deletedVendor}」`, 'success');
+            }
+        }
+
+        // 儲存所有廠商資料到 localStorage
+        function saveVendorData() {
+            const savedData = localStorage.getItem('vendorPricingData');
+            if (savedData) {
+                showVendorStatus('✅ 資料已儲存到瀏覽器', 'success');
+            } else {
+                showVendorStatus('❌ 沒有資料需要儲存', 'error');
+            }
+        }
+
+        // 匯出廠商資料為 Excel 檔案
+        function exportVendorData() {
+            const savedData = localStorage.getItem('vendorPricingData');
+            const vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            
+            // 創建工作表資料
+            const worksheetData = [
+                // 表頭
+                ['廠商名稱', '方案名稱', '週次數', '他行週總量', '我方換算-14', '我方換算-25', '原價', '1月優', '3月優', '6月優'],
+                // 資料行
+                ...vendorData.map(row => [
+                    row.vendorName,
+                    row.planName,
+                    row.weeklyFreq,
+                    row.otherVolume,
+                    row.ourConvert14,
+                    row.ourConvert25,
+                    row.originalPrice,
+                    row.discount1m,
+                    row.discount3m,
+                    row.discount6m
+                ])
+            ];
+            
+            // 創建工作簿和工作表
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+            
+            // 設定欄位寬度
+            const colWidths = [
+                { wch: 15 }, // 廠商名稱
+                { wch: 12 }, // 方案名稱
+                { wch: 8 },  // 週次數
+                { wch: 15 }, // 他行週總量
+                { wch: 18 }, // 我方換算-14
+                { wch: 18 }, // 我方換算-25
+                { wch: 10 }, // 原價
+                { wch: 8 },  // 1月優
+                { wch: 8 },  // 3月優
+                { wch: 8 }   // 6月優
+            ];
+            worksheet['!cols'] = colWidths;
+            
+            // 將工作表添加到工作簿
+            XLSX.utils.book_append_sheet(workbook, worksheet, '廠商價格');
+            
+            // 匯出Excel檔案
+            const fileName = `廠商價格資料_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            XLSX.writeFile(workbook, fileName);
+            
+            showVendorStatus('✅ 資料已匯出為 Excel 檔案', 'success');
+        }
+
+        // 匯入 Excel 檔案
+        function importVendorData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    // 讀取Excel檔案
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // 取得第一個工作表
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    
+                    // 轉換為JSON格式
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    
+                    if (jsonData.length < 2) {
+                        showVendorStatus('❌ Excel 檔案內容不足', 'error');
+                        return;
+                    }
+                    
+                    // 取得表頭 (第一行)
+                    const headers = jsonData[0];
+                    const expectedHeaders = ['廠商名稱', '方案名稱', '週次數', '他行週總量', '我方換算-14', '我方換算-25', '原價', '1月優', '3月優', '6月優'];
+                    
+                    // 驗證表頭格式
+                    const headersMatch = expectedHeaders.every(header => headers.includes(header));
+                    if (!headersMatch) {
+                        showVendorStatus('❌ Excel 檔案表頭格式不正確', 'error');
+                        return;
+                    }
+                    
+                    // 轉換資料格式
+                    const importedData = [];
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        if (row.length >= 10 && row[0]) { // 確保有足夠的欄位且廠商名稱不為空
+                            importedData.push({
+                                vendorName: row[0] || '',
+                                planName: row[1] || '',
+                                weeklyFreq: row[2] || '',
+                                otherVolume: row[3] || '',
+                                ourConvert14: row[4] || '',
+                                ourConvert25: row[5] || '',
+                                originalPrice: row[6] || '',
+                                discount1m: row[7] || '',
+                                discount3m: row[8] || '',
+                                discount6m: row[9] || ''
+                            });
+                        }
+                    }
+                    
+                    if (importedData.length > 0) {
+                        localStorage.setItem('vendorPricingData', JSON.stringify(importedData));
+                        renderVendorTable(importedData);
+                        showVendorStatus(`✅ 成功匯入 ${importedData.length} 筆廠商資料`, 'success');
+                    } else {
+                        showVendorStatus('❌ Excel 檔案無有效資料', 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('Excel import error:', error);
+                    showVendorStatus('❌ Excel 檔案解析失敗', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            
+            // 清空 file input
+            event.target.value = '';
+        }
+
+        // 顯示廠商功能狀態訊息
+        function showVendorStatus(message, type) {
+            const statusDiv = document.getElementById('vendor-status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            
+            // 3秒後清除訊息
+            setTimeout(() => {
+                statusDiv.textContent = '';
+                statusDiv.className = 'status';
+            }, 3000);
+        }
+
+        // ========== 競爭廠商比較功能 ==========
+        
+        // 生成競爭廠商比較表格
+        function generateVendorComparison(fieldMapping) {
+            try {
+                // 從localStorage獲取廠商資料，如果沒有則使用預設資料
+                const savedData = localStorage.getItem('vendorPricingData');
+                let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+                
+                // 取得客戶的週次數 - 優先使用Google試算表的weeklyFrequency，再使用手動輸入的frequency
+                let frequency = 0;
+                
+                // 優先從weeklyFrequency解析（Google試算表資料更準確）
+                if (fieldMapping.weeklyFrequency) {
+                    const match = fieldMapping.weeklyFrequency.match(/(\d+)趟/);
+                    if (match) {
+                        frequency = parseInt(match[1]);
+                    }
+                }
+                
+                // 如果還是沒有頻率，才使用手動輸入的frequency
+                if (frequency === 0) {
+                    frequency = parseInt(fieldMapping.frequency) || 0;
+                }
+                
+                console.log('Customer frequency:', frequency);
+                console.log('FieldMapping frequency:', fieldMapping.frequency);
+                console.log('FieldMapping weeklyFrequency:', fieldMapping.weeklyFrequency);
+                
+                if (frequency === 0) {
+                    document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定週次數，無法進行廠商比較</div>';
+                    document.getElementById('vendor-comparison').style.display = 'block';
+                    return;
+                }
+                
+                // 篩選相同週次數的廠商方案
+                const matchingPlans = vendorData.filter(vendor => {
+                    const vendorFreq = parseInt(vendor.weeklyFreq) || 0;
+                    return vendorFreq === frequency;
+                });
+                
+                console.log('Matching plans by frequency:', matchingPlans);
+                
+                if (matchingPlans.length === 0) {
+                    document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">沒有找到相同週次數的競爭廠商方案</div>';
+                    document.getElementById('vendor-comparison').style.display = 'block';
+                    return;
+                }
+                
+                // 取得客戶垃圾量資訊進行進一步篩選（可選）
+                // 這裡簡化處理，顯示所有相同週次數的方案
+                
+                // 生成比較表格HTML
+                let tableHtml = `
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>廠商名稱</th>
+                                <th>方案名稱</th>
+                                <th>週次數</th>
+                                <th>垃圾量</th>
+                                <th>我方換算-14</th>
+                                <th>我方換算-25</th>
+                                <th>原價</th>
+                                <th>1月優</th>
+                                <th>3月優</th>
+                                <th>6月優</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                matchingPlans.forEach(vendor => {
+                    tableHtml += `
+                        <tr>
+                            <td class="vendor-name">${vendor.vendorName}</td>
+                            <td>${vendor.planName}</td>
+                            <td>${vendor.weeklyFreq}次</td>
+                            <td>${vendor.otherVolume}</td>
+                            <td class="price-cell">${vendor.ourConvert14}包</td>
+                            <td class="price-cell">${vendor.ourConvert25}包</td>
+                            <td class="price-cell">$${vendor.originalPrice}</td>
+                            <td class="price-cell">${vendor.discount1m === '無' ? '無' : '$' + vendor.discount1m}</td>
+                            <td class="price-cell">${vendor.discount3m === '無' ? '無' : '$' + vendor.discount3m}</td>
+                            <td class="price-cell">${vendor.discount6m === '無' ? '無' : '$' + vendor.discount6m}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+                
+                document.getElementById('vendor-comparison-table').innerHTML = tableHtml;
+                document.getElementById('vendor-comparison').style.display = 'block';
+                
+                console.log('Vendor comparison generated successfully');
+                
+            } catch (error) {
+                console.error('Error generating vendor comparison:', error);
+                document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">載入競爭廠商資料失敗</div>';
+                document.getElementById('vendor-comparison').style.display = 'block';
+            }
+        }
 
         // Tab switching functionality
         function showTab(tabId, clickedButton = null) {
@@ -4982,6 +6220,111 @@ ${serviceSchedule}
             }
         }
 
+        // ========== 會員登入功能 ==========
+        
+        // 預定的帳號密碼
+        const validCredentials = {
+            username: 'reco',
+            password: '123456'
+        };
+        
+        // 檢查登入狀態
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const loginTime = localStorage.getItem('loginTime');
+            
+            // 檢查是否超過24小時（可選）
+            const currentTime = new Date().getTime();
+            const loginTimeMs = parseInt(loginTime) || 0;
+            const isSessionValid = (currentTime - loginTimeMs) < (24 * 60 * 60 * 1000); // 24小時
+            
+            if (isLoggedIn && isSessionValid) {
+                showMainContent();
+            } else {
+                showLoginForm();
+                // 清除過期的登入資訊
+                if (!isSessionValid) {
+                    localStorage.removeItem('userLoggedIn');
+                    localStorage.removeItem('loginTime');
+                }
+            }
+        }
+        
+        // 顯示登入表單
+        function showLoginForm() {
+            document.getElementById('login-overlay').style.display = 'flex';
+            document.getElementById('logout-btn').style.display = 'none';
+            // 隱藏主要內容
+            const container = document.querySelector('.container');
+            if (container) container.style.display = 'none';
+        }
+        
+        // 顯示主要內容
+        function showMainContent() {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'block';
+            // 顯示主要內容
+            const container = document.querySelector('.container');
+            if (container) container.style.display = 'block';
+        }
+        
+        // 登入驗證
+        function login(username, password) {
+            if (username === validCredentials.username && password === validCredentials.password) {
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('loginTime', new Date().getTime().toString());
+                showMainContent();
+                return true;
+            }
+            return false;
+        }
+        
+        // 登出
+        function logout() {
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('loginTime');
+            showLoginForm();
+        }
+        
+        // 登入表單事件監聴
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化檢查登入狀態
+            checkLoginStatus();
+            
+            // 登入表單提交事件
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('username').value.trim();
+                    const password = document.getElementById('password').value.trim();
+                    
+                    if (login(username, password)) {
+                        document.getElementById('login-error').style.display = 'none';
+                        // 清除表單
+                        document.getElementById('username').value = '';
+                        document.getElementById('password').value = '';
+                    } else {
+                        document.getElementById('login-error').style.display = 'block';
+                        // 清除密碼欄位
+                        document.getElementById('password').value = '';
+                        document.getElementById('password').focus();
+                    }
+                });
+            }
+            
+            // Enter 鍵快速登入
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && document.getElementById('login-overlay').style.display === 'flex') {
+                    const loginForm = document.getElementById('login-form');
+                    if (loginForm) {
+                        loginForm.dispatchEvent(new Event('submit'));
+                    }
+                }
+            });
+        });
+        
     </script>
 </body>
 </html>
