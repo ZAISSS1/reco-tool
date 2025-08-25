@@ -53,7 +53,6 @@
             display: flex;
             background: #1a1a1a;
             border-bottom: 2px solid #404040;
-            overflow-x: auto;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -62,13 +61,13 @@
 
         .tab {
             flex: 1;
-            min-width: 200px;
-            padding: 15px 10px;
+            min-width: 120px;
+            padding: 12px 6px;
             text-align: center;
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: #a0a0a0;
             transition: all 0.3s ease;
@@ -661,16 +660,16 @@
             }
             
             .tabs {
-                gap: 2px;
-                padding: 5px 2px;
+                gap: 0;
+                padding: 2px;
                 position: sticky;
                 top: 0;
                 z-index: 1001;
             }
             
             .tab {
-                padding: 8px 6px;
-                font-size: 11px;
+                padding: 6px 3px;
+                font-size: 10px;
                 min-height: auto;
                 min-width: auto;
                 flex: 1;
@@ -785,7 +784,7 @@
             }
         }
 
-        /* 廠商價格表格樣式 */
+        /* 外部價格表格樣式 */
         .vendor-table {
             width: 100%;
             border-collapse: collapse;
@@ -1044,8 +1043,7 @@
             <button class="tab" onclick="showTab('monthly')"><span class="desktop-text">🚀 報價⮕包月任務</span><span class="mobile-text">包月任務</span></button>
             <button class="tab" onclick="showTab('single')"><span class="desktop-text">🚀 報價⮕單趟任務</span><span class="mobile-text">單趟任務</span></button>
             <button class="tab" onclick="showTab('clean')"><span class="desktop-text">🚀 報價⮕單次清潔</span><span class="mobile-text">清潔任務</span></button>
-            <button class="tab" onclick="showTab('vendor-pricing')"><span class="desktop-text">💰 廠商價格</span><span class="mobile-text">廠商價格</span></button>
-
+            <button class="tab" onclick="showTab('vendor-pricing')"><span class="desktop-text">💱 外部價格</span><span class="mobile-text">外部價格</span></button>
         </div>
 
         <!-- 客戶單⮕自動報價單 -->
@@ -2043,14 +2041,14 @@
             </div>
         </div>
 
-        <!-- 廠商價格頁面 -->
+        <!-- 外部價格頁面 -->
         <div id="vendor-pricing" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">💰 廠商價格管理</h3>
+                    <h3 style="margin: 0;">💱 外部價格管理</h3>
                 </div>
                 <div class="info-box">
-                    💡 管理競爭廠商的價格資訊，支援直接編輯、新增刪除、資料儲存與匯出功能
+                    💡 管理外部廠商的價格資訊，支援直接編輯、新增刪除、資料儲存與匯出功能
                 </div>
                 
                 <!-- 控制按鈕 -->
@@ -2109,7 +2107,16 @@
             document.getElementById(tabName).classList.add('active');
             
             // Add active class to clicked tab
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // 當切換到外部價格管理頁面時，自動載入並顯示資料
+            if (tabName === 'vendor-pricing') {
+                setTimeout(() => {
+                    loadVendorData();
+                }, 100); // 短暫延遲確保DOM已更新
+            }
         }
 
         // 切換包月任務計費方式
@@ -5446,12 +5453,12 @@ ${serviceSchedule}
             updateSingleQuoteSavedUrlsDropdown();
             updateSavedUrlsDropdown();
             showTab('auto-quote'); // Initialize first tab as active
-            loadVendorData(); // 載入廠商價格資料
+            loadVendorData(); // 載入外部價格資料
         });
 
-        // ========== 廠商價格管理功能 ==========
+        // ========== 外部價格管理功能 ==========
         
-        // 廠商價格資料
+        // 外部價格資料
         const defaultVendorData = [
             // 我來科技
             {
@@ -5986,10 +5993,10 @@ ${serviceSchedule}
             worksheet['!cols'] = colWidths;
             
             // 將工作表添加到工作簿
-            XLSX.utils.book_append_sheet(workbook, worksheet, '廠商價格');
+            XLSX.utils.book_append_sheet(workbook, worksheet, '外部價格');
             
             // 匯出Excel檔案
-            const fileName = `廠商價格資料_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            const fileName = `外部價格資料_${new Date().toISOString().slice(0, 10)}.xlsx`;
             XLSX.writeFile(workbook, fileName);
             
             showVendorStatus('✅ 資料已匯出為 Excel 檔案', 'success');
@@ -6217,6 +6224,13 @@ ${serviceSchedule}
             }
             if (clickedButton) {
                 clickedButton.classList.add('active');
+            }
+            
+            // 當切換到外部價格管理頁面時，自動載入並顯示資料
+            if (tabId === 'vendor-pricing') {
+                setTimeout(() => {
+                    loadVendorData();
+                }, 100); // 短暫延遲確保DOM已更新
             }
         }
 
