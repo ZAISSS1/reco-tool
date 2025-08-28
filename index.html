@@ -1363,6 +1363,12 @@
                     <button class="btn quote" onclick="generateQuote()">∞</button>
                 </div>
                 
+                <!-- 競爭廠商比較區塊 -->
+                <div class="output-section" id="quote-vendor-comparison" style="display: none; margin-bottom: 20px;">
+                    <h4>📊 競爭廠商比較</h4>
+                    <div id="quote-vendor-comparison-table" class="vendor-comparison-container"></div>
+                </div>
+
                 <div class="output-section" id="quote-output" style="display: none;">
                     <h4>📋 生成的報價單</h4>
                     <div class="output-area" id="quote-result"></div>
@@ -2275,6 +2281,13 @@ ${keyNote}
 ⚡我們改變的是城市的運轉速度
 
 ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
+
+            // 生成競爭廠商比較
+            const fieldMapping = {
+                weeklyFrequency: weeklyTrips + '趟',
+                frequency: weeklyTrips
+            };
+            generateQuoteVendorComparison(fieldMapping);
 
             document.getElementById('quote-result').textContent = quote;
             document.getElementById('quote-output').style.display = 'block';
@@ -6090,6 +6103,105 @@ ${serviceSchedule}
         }
 
         // ========== 競爭廠商比較功能 ==========
+        
+        // 為手動報價生成競爭廠商比較表格
+        function generateQuoteVendorComparison(fieldMapping) {
+            try {
+                // 從 localStorage 獲取廠商資料，如果沒有則使用預設資料
+                const savedData = localStorage.getItem('vendorPricingData');
+                let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+                
+                // 取得客戶的週次數
+                let frequency = 0;
+                
+                // 從 fieldMapping 解析週次數
+                if (fieldMapping.weeklyFrequency) {
+                    const match = fieldMapping.weeklyFrequency.match(/(\d+)趟/);
+                    if (match) {
+                        frequency = parseInt(match[1]);
+                    }
+                }
+                
+                // 如果還是沒有頻率，才使用手動輸入的 frequency
+                if (frequency === 0) {
+                    frequency = parseInt(fieldMapping.frequency) || 0;
+                }
+                
+                console.log('Quote Customer frequency:', frequency);
+                
+                if (frequency === 0) {
+                    document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定週次數，無法進行廠商比較</div>';
+                    document.getElementById('quote-vendor-comparison').style.display = 'block';
+                    return;
+                }
+                
+                // 篩選相同週次數的廠商方案
+                const matchingPlans = vendorData.filter(vendor => {
+                    const vendorFreq = parseInt(vendor.weeklyFreq) || 0;
+                    return vendorFreq === frequency;
+                });
+                
+                console.log('Quote Matching plans by frequency:', matchingPlans);
+                
+                if (matchingPlans.length === 0) {
+                    document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">沒有找到相同週次數的競爭廠商方案</div>';
+                    document.getElementById('quote-vendor-comparison').style.display = 'block';
+                    return;
+                }
+                
+                // 生成比較表格 HTML
+                let tableHtml = `
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>廠商名稱</th>
+                                <th>方案名稱</th>
+                                <th>週次數</th>
+                                <th>垃圾量</th>
+                                <th>我方換算-14</th>
+                                <th>我方換算-25</th>
+                                <th>原價</th>
+                                <th>1月優</th>
+                                <th>3月優</th>
+                                <th>6月優</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                matchingPlans.forEach(vendor => {
+                    tableHtml += `
+                        <tr>
+                            <td class="vendor-name">${vendor.vendorName}</td>
+                            <td>${vendor.planName}</td>
+                            <td>${vendor.weeklyFreq}次</td>
+                            <td>${vendor.otherVolume}</td>
+                            <td class="price-cell">${vendor.ourConvert14}包</td>
+                            <td class="price-cell">${vendor.ourConvert25}包</td>
+                            <td class="price-cell">$${vendor.originalPrice}</td>
+                            <td class="price-cell">${vendor.discount1m === '無' ? '無' : '$' + vendor.discount1m}</td>
+                            <td class="price-cell">${vendor.discount3m === '無' ? '無' : '$' + vendor.discount3m}</td>
+                            <td class="price-cell">${vendor.discount6m === '無' ? '無' : '$' + vendor.discount6m}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+                
+                document.getElementById('quote-vendor-comparison-table').innerHTML = tableHtml;
+                document.getElementById('quote-vendor-comparison').style.display = 'block';
+                
+                console.log('Quote vendor comparison generated successfully');
+                
+            } catch (error) {
+                console.error('Error generating quote vendor comparison:', error);
+                document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">載入競爭廠商資料失敗</div>';
+                document.getElementById('quote-vendor-comparison').style.display = 'block';
+            }
+        }
         
         // 生成競爭廠商比較表格
         function generateVendorComparison(fieldMapping) {
