@@ -794,6 +794,97 @@
             overflow: hidden;
             border: 1px solid #404040;
         }
+        
+        .vendor-name-cell {
+            text-align: left;
+            vertical-align: middle;
+        }
+        
+        .vendor-name-link {
+            color: #28a745 !important;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+        
+        .vendor-name-link:hover {
+            color: #20c997 !important;
+            text-decoration: underline;
+            transform: translateY(-1px);
+        }
+        
+        .vendor-name-no-url {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .vendor-edit-hint {
+            color: #6c757d;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+        
+        .vendor-edit-hint:hover {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+        
+        .vendor-edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .vendor-edit-input {
+            padding: 6px 8px;
+            border: 2px solid #28a745;
+            border-radius: 4px;
+            background: #333;
+            color: #ffffff;
+            font-size: 13px;
+        }
+        
+        .vendor-edit-input:focus {
+            outline: none;
+            border-color: #20c997;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        }
+        
+        .vendor-edit-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .vendor-save-btn, .vendor-cancel-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .vendor-save-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .vendor-save-btn:hover {
+            background: #20c997;
+        }
+        
+        .vendor-cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .vendor-cancel-btn:hover {
+            background: #5a6268;
+        }
 
         .vendor-table th {
             background: linear-gradient(135deg, #333333 0%, #1a1a1a 100%);
@@ -2073,10 +2164,10 @@
                             <tr>
                                 <th>廠商名稱</th>
                                 <th>方案名稱</th>
-                                <th>週次數</th>
-                                <th>他行週總量</th>
-                                <th>我方換算-14</th>
-                                <th>我方換算-25</th>
+                                <th>一週次數</th>
+                                <th>廠商總價</th>
+                                <th>換算14公升</th>
+                                <th>換算25公升</th>
                                 <th>原價</th>
                                 <th>1月優</th>
                                 <th>3月優</th>
@@ -5484,7 +5575,8 @@ ${serviceSchedule}
                 originalPrice: "480",
                 discount1m: "470",
                 discount3m: "",
-                discount6m: ""
+                discount6m: "",
+                vendorUrl: "https://www.wecometechnology.com"
             },
             {
                 vendorName: "我來科技",
@@ -5496,7 +5588,8 @@ ${serviceSchedule}
                 originalPrice: "980",
                 discount1m: "960",
                 discount3m: "",
-                discount6m: ""
+                discount6m: "",
+                vendorUrl: "https://www.wecometechnology.com"
             },
             {
                 vendorName: "我來科技",
@@ -5508,7 +5601,8 @@ ${serviceSchedule}
                 originalPrice: "1,480",
                 discount1m: "1,450",
                 discount3m: "",
-                discount6m: ""
+                discount6m: "",
+                vendorUrl: "https://www.wecometechnology.com"
             },
             // 垃可
             {
@@ -5521,7 +5615,8 @@ ${serviceSchedule}
                 originalPrice: "380",
                 discount1m: "無",
                 discount3m: "361",
-                discount6m: "342"
+                discount6m: "342",
+                vendorUrl: "https://trashapp.com.tw"
             },
             {
                 vendorName: "垃可",
@@ -5533,7 +5628,8 @@ ${serviceSchedule}
                 originalPrice: "760",
                 discount1m: "無",
                 discount3m: "722",
-                discount6m: "684"
+                discount6m: "684",
+                vendorUrl: "https://trashapp.com.tw"
             },
             {
                 vendorName: "垃可",
@@ -5545,7 +5641,8 @@ ${serviceSchedule}
                 originalPrice: "1,140",
                 discount1m: "無",
                 discount3m: "1,083",
-                discount6m: "1,026"
+                discount6m: "1,026",
+                vendorUrl: "https://trashapp.com.tw"
             },
             {
                 vendorName: "垃可",
@@ -5557,7 +5654,8 @@ ${serviceSchedule}
                 originalPrice: "1,440",
                 discount1m: "無",
                 discount3m: "1,368",
-                discount6m: "1,296"
+                discount6m: "1,296",
+                vendorUrl: "https://trashapp.com.tw"
             },
             {
                 vendorName: "垃可",
@@ -5569,7 +5667,8 @@ ${serviceSchedule}
                 originalPrice: "1,800",
                 discount1m: "無",
                 discount3m: "1,710",
-                discount6m: "1,620"
+                discount6m: "1,620",
+                vendorUrl: "https://trashapp.com.tw"
             },
             {
                 vendorName: "垃可",
@@ -5843,6 +5942,42 @@ ${serviceSchedule}
         function loadVendorData() {
             const savedData = localStorage.getItem('vendorPricingData');
             let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            
+            // 確保所有廠商資料都有 vendorUrl 欄位
+            vendorData = vendorData.map(vendor => {
+                if (!vendor.hasOwnProperty('vendorUrl')) {
+                    // 根據廠商名稱設定預設網址
+                    let defaultUrl = '';
+                    switch(vendor.vendorName) {
+                        case '我來科技':
+                            defaultUrl = 'https://www.wecometechnology.com';
+                            break;
+                        case '垃可':
+                            defaultUrl = 'https://trashapp.com.tw';
+                            break;
+                        case '信義垃圾':
+                            defaultUrl = 'https://xinyi-waste.com.tw';
+                            break;
+                        case '優力':
+                            defaultUrl = 'https://youli-service.com';
+                            break;
+                        case '哈囉收':
+                            defaultUrl = 'https://hellocollect.tw';
+                            break;
+                        case '代收哥':
+                            defaultUrl = 'https://pickup-bro.com';
+                            break;
+                        default:
+                            defaultUrl = '';
+                    }
+                    return { ...vendor, vendorUrl: defaultUrl };
+                }
+                return vendor;
+            });
+            
+            // 儲存更新後的資料
+            localStorage.setItem('vendorPricingData', JSON.stringify(vendorData));
+            
             renderVendorTable(vendorData);
         }
 
@@ -5853,8 +5988,16 @@ ${serviceSchedule}
             
             data.forEach((row, index) => {
                 const tr = document.createElement('tr');
+                // 處理廠商名稱與網址合併顯示
+                let vendorNameDisplay = '';
+                if (row.vendorUrl && row.vendorUrl.trim() !== '') {
+                    vendorNameDisplay = `<a href="${row.vendorUrl}" target="_blank" class="vendor-name-link" onclick="event.stopPropagation();">${row.vendorName} 🔗</a><br><small class="vendor-edit-hint" onclick="makeVendorEditable(this, ${index})">點擊編輯</small>`;
+                } else {
+                    vendorNameDisplay = `<span class="vendor-name-no-url">${row.vendorName}</span><br><small class="vendor-edit-hint" onclick="makeVendorEditable(this, ${index})">點擊新增網址</small>`;
+                }
+                
                 tr.innerHTML = `
-                    <td class="editable" onclick="makeEditable(this, ${index}, 'vendorName')">${row.vendorName}</td>
+                    <td class="vendor-name-cell">${vendorNameDisplay}</td>
                     <td class="editable" onclick="makeEditable(this, ${index}, 'planName')">${row.planName}</td>
                     <td class="editable" onclick="makeEditable(this, ${index}, 'weeklyFreq')">${row.weeklyFreq}</td>
                     <td class="editable" onclick="makeEditable(this, ${index}, 'otherVolume')">${row.otherVolume}</td>
@@ -5914,6 +6057,62 @@ ${serviceSchedule}
             showVendorStatus('✅ 資料已更新', 'success');
         }
 
+        // 編輯廠商名稱與網址
+        function makeVendorEditable(element, index) {
+            const savedData = localStorage.getItem('vendorPricingData');
+            let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            const row = vendorData[index];
+            
+            const cell = element.parentNode;
+            const originalContent = cell.innerHTML;
+            
+            cell.innerHTML = `
+                <div class="vendor-edit-form">
+                    <input type="text" class="vendor-edit-input" id="vendorName_${index}" 
+                           value="${row.vendorName}" placeholder="廠商名稱">
+                    <input type="url" class="vendor-edit-input" id="vendorUrl_${index}" 
+                           value="${row.vendorUrl || ''}" placeholder="廠商網址 (選填)">
+                    <div class="vendor-edit-buttons">
+                        <button class="vendor-save-btn" onclick="saveVendorEdit(${index})">儲存</button>
+                        <button class="vendor-cancel-btn" onclick="cancelVendorEdit(${index})">取消</button>
+                    </div>
+                </div>
+            `;
+            
+            // 儲存原始內容供取消時使用
+            cell.dataset.originalContent = originalContent;
+            document.getElementById(`vendorName_${index}`).focus();
+        }
+        
+        // 儲存廠商編輯
+        function saveVendorEdit(index) {
+            const vendorNameInput = document.getElementById(`vendorName_${index}`);
+            const vendorUrlInput = document.getElementById(`vendorUrl_${index}`);
+            
+            if (!vendorNameInput.value.trim()) {
+                alert('請輸入廠商名稱');
+                return;
+            }
+            
+            const savedData = localStorage.getItem('vendorPricingData');
+            let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
+            
+            vendorData[index].vendorName = vendorNameInput.value.trim();
+            vendorData[index].vendorUrl = vendorUrlInput.value.trim();
+            
+            localStorage.setItem('vendorPricingData', JSON.stringify(vendorData));
+            renderVendorTable(vendorData);
+            showVendorStatus('✅ 廠商資料已更新', 'success');
+        }
+        
+        // 取消廠商編輯
+        function cancelVendorEdit(index) {
+            const cell = document.querySelector(`#vendor-table-body tr:nth-child(${index + 1}) td:first-child`);
+            if (cell && cell.dataset.originalContent) {
+                cell.innerHTML = cell.dataset.originalContent;
+            }
+        }
+
         // 新增廠商資料列
         function addVendorRow() {
             const savedData = localStorage.getItem('vendorPricingData');
@@ -5929,7 +6128,8 @@ ${serviceSchedule}
                 originalPrice: "0",
                 discount1m: "0",
                 discount3m: "0", 
-                discount6m: "0"
+                discount6m: "0",
+                vendorUrl: ""
             };
             
             vendorData.push(newRow);
@@ -5970,7 +6170,7 @@ ${serviceSchedule}
             // 創建工作表資料
             const worksheetData = [
                 // 表頭
-                ['廠商名稱', '方案名稱', '週次數', '他行週總量', '我方換算-14', '我方換算-25', '原價', '1月優', '3月優', '6月優'],
+                ['廠商名稱', '方案名稱', '一週次數', '廠商總價', '換算14公升', '換算25公升', '原價', '1月優', '3月優', '6月優', '廠商網址'],
                 // 資料行
                 ...vendorData.map(row => [
                     row.vendorName,
@@ -5982,7 +6182,8 @@ ${serviceSchedule}
                     row.originalPrice,
                     row.discount1m,
                     row.discount3m,
-                    row.discount6m
+                    row.discount6m,
+                    row.vendorUrl || ''
                 ])
             ];
             
@@ -5994,14 +6195,15 @@ ${serviceSchedule}
             const colWidths = [
                 { wch: 15 }, // 廠商名稱
                 { wch: 12 }, // 方案名稱
-                { wch: 8 },  // 週次數
-                { wch: 15 }, // 他行週總量
-                { wch: 18 }, // 我方換算-14
-                { wch: 18 }, // 我方換算-25
+                { wch: 8 },  // 一週次數
+                { wch: 15 }, // 廠商總價
+                { wch: 18 }, // 換算14公升
+                { wch: 18 }, // 換算25公升
                 { wch: 10 }, // 原價
                 { wch: 8 },  // 1月優
                 { wch: 8 },  // 3月優
-                { wch: 8 }   // 6月優
+                { wch: 8 },  // 6月優
+                { wch: 25 }  // 廠商網址
             ];
             worksheet['!cols'] = colWidths;
             
@@ -6041,7 +6243,7 @@ ${serviceSchedule}
                     
                     // 取得表頭 (第一行)
                     const headers = jsonData[0];
-                    const expectedHeaders = ['廠商名稱', '方案名稱', '週次數', '他行週總量', '我方換算-14', '我方換算-25', '原價', '1月優', '3月優', '6月優'];
+                    const expectedHeaders = ['廠商名稱', '方案名稱', '一週次數', '廠商總價', '換算14公升', '換算25公升', '原價', '1月優', '3月優', '6月優'];
                     
                     // 驗證表頭格式
                     const headersMatch = expectedHeaders.every(header => headers.includes(header));
@@ -6065,7 +6267,8 @@ ${serviceSchedule}
                                 originalPrice: row[6] || '',
                                 discount1m: row[7] || '',
                                 discount3m: row[8] || '',
-                                discount6m: row[9] || ''
+                                discount6m: row[9] || '',
+                                vendorUrl: row[10] || ''
                             });
                         }
                     }
@@ -6111,10 +6314,10 @@ ${serviceSchedule}
                 const savedData = localStorage.getItem('vendorPricingData');
                 let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
                 
-                // 取得客戶的週次數
+                // 取得客戶的一週次數
                 let frequency = 0;
                 
-                // 從 fieldMapping 解析週次數
+                // 從 fieldMapping 解析一週次數
                 if (fieldMapping.weeklyFrequency) {
                     const match = fieldMapping.weeklyFrequency.match(/(\d+)趟/);
                     if (match) {
@@ -6130,12 +6333,12 @@ ${serviceSchedule}
                 console.log('Quote Customer frequency:', frequency);
                 
                 if (frequency === 0) {
-                    document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定週次數，無法進行廠商比較</div>';
+                    document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定一週次數，無法進行廠商比較</div>';
                     document.getElementById('quote-vendor-comparison').style.display = 'block';
                     return;
                 }
                 
-                // 篩選相同週次數的廠商方案
+                // 篩選相同一週次數的廠商方案
                 const matchingPlans = vendorData.filter(vendor => {
                     const vendorFreq = parseInt(vendor.weeklyFreq) || 0;
                     return vendorFreq === frequency;
@@ -6144,7 +6347,7 @@ ${serviceSchedule}
                 console.log('Quote Matching plans by frequency:', matchingPlans);
                 
                 if (matchingPlans.length === 0) {
-                    document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">沒有找到相同週次數的競爭廠商方案</div>';
+                    document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">沒有找到相同一週次數的競爭廠商方案</div>';
                     document.getElementById('quote-vendor-comparison').style.display = 'block';
                     return;
                 }
@@ -6156,10 +6359,10 @@ ${serviceSchedule}
                             <tr>
                                 <th>廠商名稱</th>
                                 <th>方案名稱</th>
-                                <th>週次數</th>
+                                <th>一週次數</th>
                                 <th>垃圾量</th>
-                                <th>我方換算-14</th>
-                                <th>我方換算-25</th>
+                                <th>換算14公升</th>
+                                <th>換算25公升</th>
                                 <th>原價</th>
                                 <th>1月優</th>
                                 <th>3月優</th>
@@ -6210,7 +6413,7 @@ ${serviceSchedule}
                 const savedData = localStorage.getItem('vendorPricingData');
                 let vendorData = savedData ? JSON.parse(savedData) : defaultVendorData;
                 
-                // 取得客戶的週次數 - 優先使用Google試算表的weeklyFrequency，再使用手動輸入的frequency
+                // 取得客戶的一週次數 - 優先使用Google試算表的weeklyFrequency，再使用手動輸入的frequency
                 let frequency = 0;
                 
                 // 優先從weeklyFrequency解析（Google試算表資料更準確）
@@ -6231,12 +6434,12 @@ ${serviceSchedule}
                 console.log('FieldMapping weeklyFrequency:', fieldMapping.weeklyFrequency);
                 
                 if (frequency === 0) {
-                    document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定週次數，無法進行廠商比較</div>';
+                    document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定一週次數，無法進行廠商比較</div>';
                     document.getElementById('vendor-comparison').style.display = 'block';
                     return;
                 }
                 
-                // 篩選相同週次數的廠商方案
+                // 篩選相同一週次數的廠商方案
                 const matchingPlans = vendorData.filter(vendor => {
                     const vendorFreq = parseInt(vendor.weeklyFreq) || 0;
                     return vendorFreq === frequency;
@@ -6245,13 +6448,13 @@ ${serviceSchedule}
                 console.log('Matching plans by frequency:', matchingPlans);
                 
                 if (matchingPlans.length === 0) {
-                    document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">沒有找到相同週次數的競爭廠商方案</div>';
+                    document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">沒有找到相同一週次數的競爭廠商方案</div>';
                     document.getElementById('vendor-comparison').style.display = 'block';
                     return;
                 }
                 
                 // 取得客戶垃圾量資訊進行進一步篩選（可選）
-                // 這裡簡化處理，顯示所有相同週次數的方案
+                // 這裡簡化處理，顯示所有相同一週次數的方案
                 
                 // 生成比較表格HTML
                 let tableHtml = `
@@ -6260,10 +6463,10 @@ ${serviceSchedule}
                             <tr>
                                 <th>廠商名稱</th>
                                 <th>方案名稱</th>
-                                <th>週次數</th>
+                                <th>一週次數</th>
                                 <th>垃圾量</th>
-                                <th>我方換算-14</th>
-                                <th>我方換算-25</th>
+                                <th>換算14公升</th>
+                                <th>換算25公升</th>
                                 <th>原價</th>
                                 <th>1月優</th>
                                 <th>3月優</th>
