@@ -2165,7 +2165,7 @@
                                 <th>廠商名稱</th>
                                 <th>方案名稱</th>
                                 <th>一週次數</th>
-                                <th>廠商總價</th>
+                                <th>廠商總量</th>
                                 <th>換算14公升</th>
                                 <th>換算25公升</th>
                                 <th>原價</th>
@@ -6170,7 +6170,7 @@ ${serviceSchedule}
             // 創建工作表資料
             const worksheetData = [
                 // 表頭
-                ['廠商名稱', '方案名稱', '一週次數', '廠商總價', '換算14公升', '換算25公升', '原價', '1月優', '3月優', '6月優', '廠商網址'],
+                ['廠商名稱', '方案名稱', '一週次數', '廠商總量', '換算14公升', '換算25公升', '原價', '1月優', '3月優', '6月優', '廠商網址'],
                 // 資料行
                 ...vendorData.map(row => [
                     row.vendorName,
@@ -6196,7 +6196,7 @@ ${serviceSchedule}
                 { wch: 15 }, // 廠商名稱
                 { wch: 12 }, // 方案名稱
                 { wch: 8 },  // 一週次數
-                { wch: 15 }, // 廠商總價
+                { wch: 15 }, // 廠商總量
                 { wch: 18 }, // 換算14公升
                 { wch: 18 }, // 換算25公升
                 { wch: 10 }, // 原價
@@ -6243,7 +6243,7 @@ ${serviceSchedule}
                     
                     // 取得表頭 (第一行)
                     const headers = jsonData[0];
-                    const expectedHeaders = ['廠商名稱', '方案名稱', '一週次數', '廠商總價', '換算14公升', '換算25公升', '原價', '1月優', '3月優', '6月優'];
+                    const expectedHeaders = ['廠商名稱', '方案名稱', '一週次數', '廠商總量', '換算14公升', '換算25公升', '原價', '1月優', '3月優', '6月優'];
                     
                     // 驗證表頭格式
                     const headersMatch = expectedHeaders.every(header => headers.includes(header));
