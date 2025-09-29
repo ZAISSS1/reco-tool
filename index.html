@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聯能永續-報價工具</title>
+    <title>聯能永續-報價王</title>
     <!-- 使用自定義圖標 - 強制重新載入 -->
-    <link rel="icon" href="favicon.ico?v=2" type="image/x-icon">
-    <link rel="shortcut icon" href="favicon.ico?v=2" type="image/x-icon">
-    <link rel="apple-touch-icon" href="favicon.ico?v=2">
+    <link rel="icon" href="favicon.png?v=3" type="image/png">
+    <link rel="shortcut icon" href="favicon.png?v=3" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png?v=3">
     <meta name="theme-color" content="#667eea">
     <!-- SheetJS library for Excel processing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -1124,7 +1124,7 @@
     <button id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">登出</button>
     <div class="container">
         <div class="header">
-            <h1>聯能永續-報價工具</h1>
+            <h1>聯能永續-報價王</h1>
         </div>
         
         <div class="tabs">
@@ -1771,65 +1771,66 @@
                         <div>
                             <label for="monthly-calculation-mode">計費方式：</label>
                             <select id="monthly-calculation-mode" onchange="toggleMonthlyPriceInput()">
-                                <option value="percentage" selected>百分比抽成</option>
-                                <option value="fixed">固定價格</option>
+                                <option value="percentage">百分比抽成</option>
+                                <option value="fixed" selected>固定價格</option>
                             </select>
                         </div>
-                        <div id="monthly-percentage-div">
+                        <div id="monthly-percentage-div" style="display: none;">
                             <label for="monthly-percentage">百分比：</label>
                             <input type="text" id="monthly-percentage" value="50" placeholder="執行人抽成%數">
                         </div>
-                        <div id="monthly-fixed-price-div" style="display: none;">
+                        <div id="monthly-fixed-price-div">
                             <label for="monthly-fixed-price">固定價格：</label>
                             <input type="number" id="monthly-fixed-price" min="0" step="50" placeholder="例如：300">
                         </div>
                         <div>
-                            <label for="monthly-upstairs" style="color: #888;">上樓：</label>
-                            <select id="monthly-upstairs" style="color: #888;">
+                            <label for="monthly-upstairs">上樓：</label>
+                            <select id="monthly-upstairs">
                                 <option value="" selected>請選擇</option>
                                 <option value="需上樓">需上樓</option>
                                 <option value="不用上樓">不用上樓</option>
+                                <option value="電梯">電梯</option>
                             </select>
                         </div>
                         <div>
-                            <label for="monthly-address" style="color: #888;">地址：</label>
-                            <input type="text" id="monthly-address" placeholder="請輸入完整地址" value="" style="color: #888;">
+                            <label for="monthly-address">地址：</label>
+                            <input type="text" id="monthly-address" placeholder="請輸入完整地址" value="">
                         </div>
                         <div>
-                            <label for="monthly-phone" style="color: #888;">電話：</label>
-                            <input type="text" id="monthly-phone" placeholder="請輸入聯絡電話" value="" style="color: #888;">
+                            <label for="monthly-phone">電話：</label>
+                            <input type="text" id="monthly-phone" placeholder="請輸入聯絡電話" value="">
                         </div>
                         <div>
-                            <label for="monthly-name" style="color: #888;">姓名：</label>
-                            <input type="text" id="monthly-name" placeholder="請輸入客戶姓名" value="" style="color: #888;">
+                            <label for="monthly-name">姓名：</label>
+                            <input type="text" id="monthly-name" placeholder="請輸入客戶姓名" value="">
                         </div>
                         <div>
-                            <label for="monthly-key" style="color: #888;">鑰匙：</label>
-                            <select id="monthly-key" style="color: #888;">
+                            <label for="monthly-key">鑰匙：</label>
+                            <select id="monthly-key">
                                 <option value="" selected>請選擇</option>
                                 <option value="無">無</option>
                                 <option value="有">有</option>
                             </select>
                         </div>
                         <div>
-                            <label for="monthly-time" style="color: #888;">時間：</label>
-                            <input type="text" id="monthly-time" placeholder="例如：0800後" value="" style="color: #888;">
+                            <label for="monthly-time">時間：</label>
+                            <input type="text" id="monthly-time" placeholder="例如：0800後" value="">
                         </div>
                     </div>
                     
                     <!-- 第二行設定參數 -->
                     <div class="form-row">
                         <div>
-                            <label for="monthly-trash-pickup" style="color: #888;">垃圾：</label>
-                            <input type="number" id="monthly-trash-pickup" min="1" max="100" value="" placeholder="垃圾一次收取包數" style="color: #888;">
+                            <label for="monthly-trash-pickup">垃圾：</label>
+                            <input type="number" id="monthly-trash-pickup" min="1" max="100" value="" placeholder="垃圾一次收取包數">
                         </div>
                         <div>
-                            <label for="monthly-recycle-pickup" style="color: #888;">資源：</label>
-                            <input type="number" id="monthly-recycle-pickup" min="1" max="100" value="" placeholder="資源一次收取包數" style="color: #888;">
+                            <label for="monthly-recycle-pickup">資源：</label>
+                            <input type="number" id="monthly-recycle-pickup" min="1" max="100" value="" placeholder="資源一次收取包數">
                         </div>
                         <div>
-                            <label for="monthly-bag" style="color: #888;">專用袋：</label>
-                            <select id="monthly-bag" style="color: #888;">
+                            <label for="monthly-bag">專用袋：</label>
+                            <select id="monthly-bag">
                                 <option value="" selected>請選擇</option>
                                 <option value="有">有</option>
                                 <option value="無">無</option>
@@ -1918,10 +1919,14 @@
                         </div>
                         <div>
                             <label for="single-waste-type">垃圾資源量：</label>
-                            <select id="single-waste-type">
+                            <select id="single-waste-type" onchange="toggleSingleWasteInput()">
                                 <option value="如圖" selected>如圖</option>
                                 <option value="手動填寫">手動填寫</option>
                             </select>
+                        </div>
+                        <div id="single-waste-manual-div" style="display: none;">
+                            <label for="single-waste-manual">手動填寫垃圾資源量：</label>
+                            <input type="text" id="single-waste-manual" placeholder="請詳細描述垃圾資源量">
                         </div>
                     </div>
                     
@@ -2213,6 +2218,19 @@
                 setTimeout(() => {
                     loadVendorData();
                 }, 100); // 短暫延遲確保DOM已更新
+            }
+        }
+
+        // 切換單趟任務垃圾資源量輸入方式
+        function toggleSingleWasteInput() {
+            const wasteType = document.getElementById('single-waste-type').value;
+            const manualDiv = document.getElementById('single-waste-manual-div');
+            
+            if (wasteType === '手動填寫') {
+                manualDiv.style.display = 'block';
+            } else {
+                manualDiv.style.display = 'none';
+                document.getElementById('single-waste-manual').value = '';
             }
         }
 
@@ -2710,7 +2728,8 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             }
             
             // 決定垃圾資源量文字
-            const wasteAmount = '如圖';
+            const wasteAmount = wasteType === '手動填寫' ? 
+                (document.getElementById('single-waste-manual').value || '如圖') : '如圖';
             
             // 構建其他說明內容
             let otherDetails = '';
@@ -2955,6 +2974,8 @@ ${otherDetails}
             document.getElementById('single-floor').value = '';
             document.getElementById('single-customer-bag').value = '無';
             document.getElementById('single-waste-type').value = '如圖';
+            document.getElementById('single-waste-manual').value = '';
+            document.getElementById('single-waste-manual-div').style.display = 'none';
             document.getElementById('single-fee').value = '';
             document.getElementById('single-other1').value = '';
             document.getElementById('single-other2').value = '';
