@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>聯能永續-報價王</title>
+    <title>聯能永續-報價系統模組</title>
     <!-- 使用自定義圖標 - 強制重新載入 -->
     <link rel="icon" href="favicon.png?v=3" type="image/png">
     <link rel="shortcut icon" href="favicon.png?v=3" type="image/png">
@@ -1124,7 +1124,7 @@
     <button id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">登出</button>
     <div class="container">
         <div class="header">
-            <h1>聯能永續-報價王</h1>
+            <h1>聯能永續-報價系統模組</h1>
         </div>
         
         <div class="tabs">
@@ -1906,8 +1906,13 @@
                             <input type="text" id="single-address" placeholder="例：台北市中山區民生東路">
                         </div>
                         <div>
-                            <label for="single-floor">樓層：</label>
-                            <input type="text" id="single-floor" placeholder="例：3F 或 地下1樓">
+                            <label for="single-upstairs">上樓：</label>
+                            <select id="single-upstairs">
+                                <option value="" selected>請選擇</option>
+                                <option value="需上樓">需上樓</option>
+                                <option value="不用上樓">不用上樓</option>
+                                <option value="電梯">電梯</option>
+                            </select>
                         </div>
                         <div>
                             <label for="single-customer-bag">客戶使用專用袋：</label>
@@ -2025,8 +2030,13 @@
                             <input type="text" id="clean-address" placeholder="例：台北市中山區民生東路">
                         </div>
                         <div>
-                            <label for="clean-floor">樓層：</label>
-                            <input type="text" id="clean-floor" placeholder="例：3F 或 地下1樓">
+                            <label for="clean-upstairs">上樓：</label>
+                            <select id="clean-upstairs">
+                                <option value="" selected>請選擇</option>
+                                <option value="需上樓">需上樓</option>
+                                <option value="不用上樓">不用上樓</option>
+                                <option value="電梯">電梯</option>
+                            </select>
                         </div>
                         <div>
                             <label for="clean-waste-type">現況照片：</label>
@@ -2665,7 +2675,7 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             const phone = document.getElementById('single-phone').value;
             const name = document.getElementById('single-name').value;
             const address = document.getElementById('single-address').value;
-            const floor = document.getElementById('single-floor').value;
+            const upstairs = document.getElementById('single-upstairs').value;
             const wasteType = document.getElementById('single-waste-type').value;
 
             const fee = document.getElementById('single-fee').value;
@@ -2753,7 +2763,7 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
 ➡️電話：${phone}
 ➡️姓名：${name}
 ➡️地址：${address}
-➡️樓層：${floor}
+➡️上樓：${upstairs || '無'}
 ➡️客戶自備專用袋：${customerBag}
 ➡️費用：${fee}
 ➡️垃圾資源量：${wasteAmount}
@@ -2783,7 +2793,7 @@ ${otherDetails}
             const phone = document.getElementById('clean-phone').value;
             const name = document.getElementById('clean-name').value;
             const address = document.getElementById('clean-address').value;
-            const floor = document.getElementById('clean-floor').value;
+            const upstairs = document.getElementById('clean-upstairs').value;
             const wasteType = document.getElementById('clean-waste-type').value;
             const fee = document.getElementById('clean-fee').value;
             const otherNotes1 = document.getElementById('clean-other1').value;
@@ -2848,7 +2858,7 @@ ${otherDetails}
 ➡️電話：${phone}
 ➡️姓名：${name}
 ➡️地址：${address}
-➡️上樓：${floor.includes('F') && !floor.includes('1F') ? '有' : '無'}
+➡️上樓：${upstairs || '無'}
 ➡️費用：${fee}
 ➡️清潔範圍：
 ${scopeText}
@@ -2971,7 +2981,7 @@ ${otherDetails}
             document.getElementById('single-phone').value = '';
             document.getElementById('single-name').value = '';
             document.getElementById('single-address').value = '';
-            document.getElementById('single-floor').value = '';
+            document.getElementById('single-upstairs').value = '';
             document.getElementById('single-customer-bag').value = '無';
             document.getElementById('single-waste-type').value = '如圖';
             document.getElementById('single-waste-manual').value = '';
@@ -2999,7 +3009,7 @@ ${otherDetails}
             document.getElementById('clean-phone').value = '';
             document.getElementById('clean-name').value = '';
             document.getElementById('clean-address').value = '';
-            document.getElementById('clean-floor').value = '';
+            document.getElementById('clean-upstairs').value = '';
             document.getElementById('clean-waste-type').value = '如圖';
             document.getElementById('clean-fee').value = '';
             document.getElementById('clean-other1').value = '';
