@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>聯能永續-報價模組</title>
     <!-- 使用自定義圖標 - 強制重新載入 -->
-    <link rel="icon" href="favicon.png?v=3" type="image/png">
-    <link rel="shortcut icon" href="favicon.png?v=3" type="image/png">
-    <link rel="apple-touch-icon" href="favicon.png?v=3">
+    <link rel="icon" href="favicon.png?v=5" type="image/png">
+    <link rel="shortcut icon" href="favicon.png?v=5" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png?v=5">
     <meta name="theme-color" content="#667eea">
     <!-- SheetJS library for Excel processing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -1722,6 +1722,19 @@
                 <div class="form-group">
                     <h4>⚙️ 資料輸入</h4>
                     
+                    <!-- 智能輸入區 -->
+                    <div style="background: #2a2a2a; border: 1px solid #404040; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h5 style="margin: 0; color: #fff;">🎯 智能輸入（自動分類地址/電話/姓名）</h5>
+                        </div>
+                        <textarea id="smart-input" style="width: 100%; height: 80px; padding: 10px; border: 1px solid #555; border-radius: 4px; background: #1a1a1a; color: #e0e0e0; font-size: 14px; resize: vertical; margin-bottom: 10px;"></textarea>
+                        <div style="display: flex; justify-content: center;">
+                            <button onclick="parseSmartInput()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                🔍 自動分類
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- 第一行：日期、時間、價格、上樓、地址、電話、姓名、鑰匙 -->
                     <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;">
                         <div>
@@ -1827,6 +1840,19 @@
                 <div class="form-group">
                     <h4>⚙️ 資料輸入</h4>
                     
+                    <!-- 智能輸入區 -->
+                    <div style="background: #2a2a2a; border: 1px solid #404040; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h5 style="margin: 0; color: #fff;">🎯 智能輸入（自動分類地址/電話/姓名）</h5>
+                        </div>
+                        <textarea id="smart-input-single" style="width: 100%; height: 80px; padding: 10px; border: 1px solid #555; border-radius: 4px; background: #1a1a1a; color: #e0e0e0; font-size: 14px; resize: vertical; margin-bottom: 10px;"></textarea>
+                        <div style="display: flex; justify-content: center;">
+                            <button onclick="parseSmartInputSingle()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                🔍 自動分類
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- 第一行：日期到費用所有欄位 -->
                     <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;">
                         <div>
@@ -1897,7 +1923,7 @@
                             <!-- 說明1（預設） -->
                             <div class="single-note-item" id="single-note-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                                 <div style="flex: 0 0 100px;">
-                                    <label>📝說明1：</label>
+                                    <label>說明1：</label>
                                 </div>
                                 <div style="flex: 1;">
                                     <input type="text" id="single-other1" placeholder="例：回報路段" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -1958,6 +1984,19 @@
                 <div class="form-group">
                     <h4>⚙️ 資料輸入</h4>
                     
+                    <!-- 智能輸入區 -->
+                    <div style="background: #2a2a2a; border: 1px solid #404040; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h5 style="margin: 0; color: #fff;">🎯 智能輸入（自動分類地址/電話/姓名）</h5>
+                        </div>
+                        <textarea id="smart-input-clean" style="width: 100%; height: 80px; padding: 10px; border: 1px solid #555; border-radius: 4px; background: #1a1a1a; color: #e0e0e0; font-size: 14px; resize: vertical; margin-bottom: 10px;"></textarea>
+                        <div style="display: flex; justify-content: center;">
+                            <button onclick="parseSmartInputClean()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                🔍 自動分類
+                            </button>
+                        </div>
+                    </div>
+                    
                     <!-- 第一行參數：日期到費用 -->
                     <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;">
                         <div>
@@ -1995,27 +2034,6 @@
                         </div>
                     </div>
                     
-                    <!-- 動態其他說明區域 -->
-                    <div style="margin-top: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <h4 style="margin: 0;">📝 其他說明</h4>
-                            <button id="add-clean-note-btn" onclick="addCleanNote()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
-                                ➕ 增加說明
-                            </button>
-                        </div>
-                        <div id="clean-notes-container">
-                            <!-- 說明1（預設） -->
-                            <div class="clean-note-item" id="clean-note-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
-                                <div style="flex: 0 0 100px;">
-                                    <label>📝說明1：</label>
-                                </div>
-                                <div style="flex: 1;">
-                                    <input type="text" id="clean-other1" placeholder="例：特殊清潔需求" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- 動態清潔範圍區域 -->
                     <div style="margin-top: 20px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -2028,10 +2046,31 @@
                             <!-- 項目1（預設） -->
                             <div class="clean-scope-item" id="clean-scope-item-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                                 <div style="flex: 0 0 100px;">
-                                    <label>🧹項目1：</label>
+                                    <label>項目1：</label>
                                 </div>
                                 <div style="flex: 1;">
                                     <input type="text" id="clean-scope-1" placeholder="清潔項目 1" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 動態其他說明區域 -->
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="margin: 0;">📝 其他說明</h4>
+                            <button id="add-clean-note-btn" onclick="addCleanNote()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                ➕ 增加說明
+                            </button>
+                        </div>
+                        <div id="clean-notes-container">
+                            <!-- 說明1（預設） -->
+                            <div class="clean-note-item" id="clean-note-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                                <div style="flex: 0 0 100px;">
+                                    <label>說明1：</label>
+                                </div>
+                                <div style="flex: 1;">
+                                    <input type="text" id="clean-other1" placeholder="例：特殊清潔需求" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
                                 </div>
                             </div>
                         </div>
@@ -2287,6 +2326,333 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             document.getElementById('quote-result').textContent = quote;
             document.getElementById('quote-output').style.display = 'block';
             showStatus('quote-status', '✅ 報價單生成完成！', 'success');
+        }
+
+        // Smart input parsing function for monthly task
+        function parseSmartInput() {
+            const input = document.getElementById('smart-input').value.trim();
+            
+            if (!input) {
+                alert('請輸入資料');
+                return;
+            }
+            
+            let address = '';
+            let phone = '';
+            let name = '';
+            
+            // 檢查是否為標籤格式（地址：xxx 電話：xxx 聯絡人：xxx）
+            if (input.includes('：') || input.includes(':')) {
+                const lines = input.split('\n');
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) continue;
+                    
+                    // 使用中文冒號或英文冒號分割
+                    const parts = trimmedLine.split(/[：:]/);
+                    if (parts.length >= 2) {
+                        const label = parts[0].trim();
+                        const value = parts.slice(1).join(':').trim();
+                        
+                        if (label.includes('地址')) {
+                            address = value;
+                        } else if (label.includes('電話') || label.includes('电话')) {
+                            phone = value;
+                        } else if (label.includes('聯絡人') || label.includes('联络人') || label.includes('姓名') || label.includes('客戶')) {
+                            name = value;
+                        }
+                    }
+                }
+            } else {
+                // 原有的智能識別邏輯
+                const text = input.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                
+                // 1. 提取電話號碼
+                const phonePatterns = [
+                    /09\d{8}/,
+                    /\d{2,4}-\d{6,8}/,
+                    /\d{10}/
+                ];
+                
+                for (const pattern of phonePatterns) {
+                    const phoneMatch = text.match(pattern);
+                    if (phoneMatch) {
+                        phone = phoneMatch[0];
+                        break;
+                    }
+                }
+                
+                // 2. 提取姓名
+                const namePatterns = [
+                    /([^\d\s]{2,4}(?:先生|小姐|女士))/,
+                    /\s([^\d\s]{2,4})\s*$/,
+                    /([^\d\s]{2,4})\s*$/
+                ];
+                
+                for (const pattern of namePatterns) {
+                    const nameMatch = text.match(pattern);
+                    if (nameMatch) {
+                        name = nameMatch[1].trim();
+                        break;
+                    }
+                }
+                
+                // 3. 提取地址
+                let remainingText = text;
+                if (phone) {
+                    remainingText = remainingText.replace(phone, '');
+                }
+                if (name) {
+                    remainingText = remainingText.replace(name, '');
+                }
+                
+                address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
+                
+                const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
+                if (!addressKeywords.some(keyword => address.includes(keyword))) {
+                    address = remainingText.trim();
+                }
+            }
+            
+            // 填充到對應欄位
+            if (address) {
+                document.getElementById('monthly-address').value = address;
+            }
+            if (phone) {
+                document.getElementById('monthly-phone').value = phone;
+            }
+            if (name) {
+                document.getElementById('monthly-name').value = name;
+            }
+            
+            // 4. 自動判斷上樓選項
+            let upstairsOption = '';
+            if (address) {
+                if (address.includes('電梯') || address.includes('电梯')) {
+                    upstairsOption = '電梯';
+                } else if (address.match(/[0-9]+樓|[0-9]+F|[0-9]+层|[0-9]+層|地下.*樓/)) {
+                    upstairsOption = '需上樓';
+                } else {
+                    upstairsOption = '不用上樓';
+                }
+                document.getElementById('monthly-upstairs').value = upstairsOption;
+            }
+            
+            // 顯示結果提示
+            let resultMsg = '✅ 自動分類完成：\n';
+            if (address) resultMsg += `地址：${address}\n`;
+            if (phone) resultMsg += `電話：${phone}\n`;
+            if (name) resultMsg += `姓名：${name}\n`;
+            if (upstairsOption) resultMsg += `上樓：${upstairsOption}`;
+            
+            if (!address && !phone && !name) {
+                alert('❌ 無法識別資料，請檢查格式');
+            } else {
+                alert(resultMsg);
+            }
+            
+            // 清空智能輸入框
+            document.getElementById('smart-input').value = '';
+        }
+
+        // Smart input parsing function for single task
+        function parseSmartInputSingle() {
+            const input = document.getElementById('smart-input-single').value.trim();
+            
+            if (!input) {
+                alert('請輸入資料');
+                return;
+            }
+            
+            let address = '';
+            let phone = '';
+            let name = '';
+            
+            // 檢查是否為標籤格式
+            if (input.includes('：') || input.includes(':')) {
+                const lines = input.split('\n');
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) continue;
+                    
+                    const parts = trimmedLine.split(/[：:]/);
+                    if (parts.length >= 2) {
+                        const label = parts[0].trim();
+                        const value = parts.slice(1).join(':').trim();
+                        
+                        if (label.includes('地址')) {
+                            address = value;
+                        } else if (label.includes('電話') || label.includes('电话')) {
+                            phone = value;
+                        } else if (label.includes('聯絡人') || label.includes('联络人') || label.includes('姓名') || label.includes('客戶')) {
+                            name = value;
+                        }
+                    }
+                }
+            } else {
+                // 原有的智能識別邏輯
+                const text = input.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                const phonePatterns = [/09\d{8}/, /\d{2,4}-\d{6,8}/, /\d{10}/];
+                for (const pattern of phonePatterns) {
+                    const phoneMatch = text.match(pattern);
+                    if (phoneMatch) {
+                        phone = phoneMatch[0];
+                        break;
+                    }
+                }
+                
+                const namePatterns = [/([^\d\s]{2,4}(?:先生|小姐|女士))/, /\s([^\d\s]{2,4})\s*$/, /([^\d\s]{2,4})\s*$/];
+                for (const pattern of namePatterns) {
+                    const nameMatch = text.match(pattern);
+                    if (nameMatch) {
+                        name = nameMatch[1].trim();
+                        break;
+                    }
+                }
+                
+                let remainingText = text;
+                if (phone) remainingText = remainingText.replace(phone, '');
+                if (name) remainingText = remainingText.replace(name, '');
+                address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
+                
+                const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
+                if (!addressKeywords.some(keyword => address.includes(keyword))) {
+                    address = remainingText.trim();
+                }
+            }
+            
+            // 填充到單趟任務欄位
+            if (address) document.getElementById('single-address').value = address;
+            if (phone) document.getElementById('single-phone').value = phone;
+            if (name) document.getElementById('single-name').value = name;
+            
+            // 自動判斷上樓選項
+            let upstairsOption = '';
+            if (address) {
+                if (address.includes('電梯') || address.includes('电梯')) {
+                    upstairsOption = '電梯';
+                } else if (address.match(/[0-9]+樓|[0-9]+F|[0-9]+层|[0-9]+層|地下.*樓/)) {
+                    upstairsOption = '需上樓';
+                } else {
+                    upstairsOption = '不用上樓';
+                }
+                document.getElementById('single-upstairs').value = upstairsOption;
+            }
+            
+            // 顯示結果提示
+            let resultMsg = '✅ 自動分類完成：\n';
+            if (address) resultMsg += `地址：${address}\n`;
+            if (phone) resultMsg += `電話：${phone}\n`;
+            if (name) resultMsg += `姓名：${name}\n`;
+            if (upstairsOption) resultMsg += `上樓：${upstairsOption}`;
+            
+            if (!address && !phone && !name) {
+                alert('❌ 無法識別資料，請檢查格式');
+            } else {
+                alert(resultMsg);
+            }
+            
+            document.getElementById('smart-input-single').value = '';
+        }
+
+        // Smart input parsing function for clean task
+        function parseSmartInputClean() {
+            const input = document.getElementById('smart-input-clean').value.trim();
+            
+            if (!input) {
+                alert('請輸入資料');
+                return;
+            }
+            
+            let address = '';
+            let phone = '';
+            let name = '';
+            
+            // 檢查是否為標籤格式
+            if (input.includes('：') || input.includes(':')) {
+                const lines = input.split('\n');
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) continue;
+                    
+                    const parts = trimmedLine.split(/[：:]/);
+                    if (parts.length >= 2) {
+                        const label = parts[0].trim();
+                        const value = parts.slice(1).join(':').trim();
+                        
+                        if (label.includes('地址')) {
+                            address = value;
+                        } else if (label.includes('電話') || label.includes('电话')) {
+                            phone = value;
+                        } else if (label.includes('聯絡人') || label.includes('联络人') || label.includes('姓名') || label.includes('客戶')) {
+                            name = value;
+                        }
+                    }
+                }
+            } else {
+                // 原有的智能識別邏輯
+                const text = input.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                const phonePatterns = [/09\d{8}/, /\d{2,4}-\d{6,8}/, /\d{10}/];
+                for (const pattern of phonePatterns) {
+                    const phoneMatch = text.match(pattern);
+                    if (phoneMatch) {
+                        phone = phoneMatch[0];
+                        break;
+                    }
+                }
+                
+                const namePatterns = [/([^\d\s]{2,4}(?:先生|小姐|女士))/, /\s([^\d\s]{2,4})\s*$/, /([^\d\s]{2,4})\s*$/];
+                for (const pattern of namePatterns) {
+                    const nameMatch = text.match(pattern);
+                    if (nameMatch) {
+                        name = nameMatch[1].trim();
+                        break;
+                    }
+                }
+                
+                let remainingText = text;
+                if (phone) remainingText = remainingText.replace(phone, '');
+                if (name) remainingText = remainingText.replace(name, '');
+                address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
+                
+                const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
+                if (!addressKeywords.some(keyword => address.includes(keyword))) {
+                    address = remainingText.trim();
+                }
+            }
+            
+            // 填充到單次清潔欄位
+            if (address) document.getElementById('clean-address').value = address;
+            if (phone) document.getElementById('clean-phone').value = phone;
+            if (name) document.getElementById('clean-name').value = name;
+            
+            // 自動判斷上樓選項
+            let upstairsOption = '';
+            if (address) {
+                if (address.includes('電梯') || address.includes('电梯')) {
+                    upstairsOption = '電梯';
+                } else if (address.match(/[0-9]+樓|[0-9]+F|[0-9]+层|[0-9]+層|地下.*樓/)) {
+                    upstairsOption = '需上樓';
+                } else {
+                    upstairsOption = '不用上樓';
+                }
+                document.getElementById('clean-upstairs').value = upstairsOption;
+            }
+            
+            // 顯示結果提示
+            let resultMsg = '✅ 自動分類完成：\n';
+            if (address) resultMsg += `地址：${address}\n`;
+            if (phone) resultMsg += `電話：${phone}\n`;
+            if (name) resultMsg += `姓名：${name}\n`;
+            if (upstairsOption) resultMsg += `上樓：${upstairsOption}`;
+            
+            if (!address && !phone && !name) {
+                alert('❌ 無法識別資料，請檢查格式');
+            } else {
+                alert(resultMsg);
+            }
+            
+            document.getElementById('smart-input-clean').value = '';
         }
 
         // Monthly task generation function
@@ -2881,7 +3247,7 @@ ${otherDetails}
             container.innerHTML = `
                 <div class="single-note-item" id="single-note-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                     <div style="flex: 0 0 100px;">
-                        <label>📝說明1：</label>
+                        <label>說明1：</label>
                     </div>
                     <div style="flex: 1;">
                         <input type="text" id="single-other1" placeholder="例：回報路段" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -2917,7 +3283,7 @@ ${otherDetails}
             notesContainer.innerHTML = `
                 <div class="clean-note-item" id="clean-note-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                     <div style="flex: 0 0 100px;">
-                        <label>📝說明1：</label>
+                        <label>說明1：</label>
                     </div>
                     <div style="flex: 1;">
                         <input type="text" id="clean-other1" placeholder="例：特殊清潔需求" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -2932,7 +3298,7 @@ ${otherDetails}
             scopeContainer.innerHTML = `
                 <div class="clean-scope-item" id="clean-scope-item-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                     <div style="flex: 0 0 100px;">
-                        <label>🧹項目1：</label>
+                        <label>項目1：</label>
                     </div>
                     <div style="flex: 1;">
                         <input type="text" id="clean-scope-1" placeholder="清潔項目 1" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -4998,7 +5364,7 @@ ${serviceSchedule}
             
             noteItem.innerHTML = `
                 <div style="flex: 0 0 100px;">
-                    <label>📝說明${activeCount + 1}：</label>
+                    <label>說明${activeCount + 1}：</label>
                 </div>
                 <div style="flex: 1;">
                     <input type="text" id="single-other${singleNoteNextId}" placeholder="例如：額外備註" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -5065,7 +5431,7 @@ ${serviceSchedule}
             
             noteItem.innerHTML = `
                 <div style="flex: 0 0 100px;">
-                    <label>📝說明${activeCount + 1}：</label>
+                    <label>說明${activeCount + 1}：</label>
                 </div>
                 <div style="flex: 1;">
                     <input type="text" id="clean-other${cleanNoteNextId}" placeholder="例：額外備註" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -5131,7 +5497,7 @@ ${serviceSchedule}
             
             scopeItem.innerHTML = `
                 <div style="flex: 0 0 100px;">
-                    <label>🧹項目${activeCount + 1}：</label>
+                    <label>項目${activeCount + 1}：</label>
                 </div>
                 <div style="flex: 1;">
                     <input type="text" id="clean-scope-${cleanScopeNextId}" placeholder="清潔項目 ${activeCount + 1}" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
