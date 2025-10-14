@@ -1209,18 +1209,18 @@
         <div id="auto-quote" class="tab-content active">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">包月自動報價</h3>
-                    <button class="clear-btn-small" onclick="clearAutoQuoteForm()" title="清空表單">×</button>
-                </div>
-                <div class="info-box">
-                    💡 自動偵測Google試算表最新資料，依照儲存格內容生成專業標準化報價單
+                    <div style="flex: 1;"></div>
+                    <h3 style="margin: 0; text-align: center;">包月自動報價</h3>
+                    <div style="flex: 1; display: flex; justify-content: flex-end;">
+                        <button class="clear-btn-small" onclick="clearAutoQuoteForm()" title="清空表單">×</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <h4>🔗 Google試算表連結</h4>
                     <div style="display: flex; align-items: flex-end; gap: 10px; margin-bottom: 10px;">
                         <div style="flex: 2;">
-                            <label for="sheets-url">試算表網址：</label>
+                            <label for="sheets-url">試算表網址：<small style="color: #888;">💡 設定為「知道連結的使用者」</small></label>
                             <input type="text" id="sheets-url" placeholder="請貼上Google試算表的共享連結" style="width: 100%;" onchange="saveUrlToHistory()">
                         </div>
                         <div style="flex: 1;">
@@ -1236,7 +1236,6 @@
                             <button onclick="clearAllUrls()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; white-space: nowrap;">清空全部</button>
                         </div>
                     </div>
-                    <small style="color: #888; margin-top: 5px; display: block;">💡 提示：請確保試算表分享設定為「知道連結的使用者」</small>
                     
                     <div id="url-manager" style="display: none; margin-top: 15px; padding: 15px; background: #2a2a2a; border-radius: 8px; border: 1px solid #404040;">
                         <h5 style="color: #fff; margin-bottom: 15px; text-align: center;">📝 歷史網址管理</h5>
@@ -1371,18 +1370,8 @@
                 <div style="display: flex; justify-content: center; margin: 25px 0;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
                         <div></div>
-                        <button onclick="fetchGoogleSheetsData()" style="background: white; color: #333; border: 2px solid #ddd; width: 50px; height: 50px; font-size: 18px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" title="讀取資料">
+                        <button onclick="fetchGoogleSheetsData()" style="background: white; color: #333; border: 2px solid #ddd; width: 60px; height: 60px; font-size: 24px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-left: 4px;" title="讀取資料">
                             ⇄
-                        </button>
-                        <div></div>
-                    </div>
-                </div>
-                
-                <div style="display: flex; justify-content: center; margin: 15px 0;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
-                        <div></div>
-                        <button onclick="clearAutoQuoteForm()" style="background: #6c757d; color: white; border: none; width: 30px; height: 30px; font-size: 14px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: 600; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);" title="清空表單" onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(108, 117, 125, 0.4)'" onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0px)'; this.style.boxShadow='0 2px 5px rgba(108, 117, 125, 0.3)'">
-                            ×
                         </button>
                         <div></div>
                     </div>
@@ -1427,11 +1416,11 @@
         <div id="quote" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">包月手動報價</h3>
-                    <button class="clear-btn-small" onclick="clearQuoteForm()" title="清空表單">×</button>
-                </div>
-                <div class="info-box">
-                    💡 將客戶資料轉換為專業標準化報價單格式
+                    <div style="flex: 1;"></div>
+                    <h3 style="margin: 0; text-align: center;">包月手動報價</h3>
+                    <div style="flex: 1; display: flex; justify-content: flex-end;">
+                        <button class="clear-btn-small" onclick="clearQuoteForm()" title="清空表單">×</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -1548,20 +1537,19 @@
         <div id="single-quote" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">單趟自動報價</h3>
-                    <button class="clear-btn-small" onclick="clearSingleQuoteForm()" title="清空表單">×</button>
-                </div>
-                <div class="info-box">
-                    💡 能偵測試算表中的地址資料，生成單趟垃圾代收報價單
+                    <div style="flex: 1;"></div>
+                    <h3 style="margin: 0; text-align: center;">單趟自動報價</h3>
+                    <div style="flex: 1; display: flex; justify-content: flex-end;">
+                        <button class="clear-btn-small" onclick="clearSingleQuoteForm()" title="清空表單">×</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <h4>🔗 Google試算表連結</h4>
                     <div class="form-row" style="grid-template-columns: 2fr 1fr;">
                         <div>
-                            <label for="single-quote-sheets-url">試算表網址：</label>
+                            <label for="single-quote-sheets-url">試算表網址：<small style="color: #888;">💡 設定為「知道連結的使用者」</small></label>
                             <input type="text" id="single-quote-sheets-url" placeholder="請貼上Google試算表的共享連結" style="width: 100%;" onchange="saveSingleQuoteUrlToHistory()">
-                            <small style="color: #888; margin-top: 5px; display: block;">💡 提示：請確保試算表分享設定為「知道連結的使用者」</small>
                         </div>
                         <div>
                             <label for="single-quote-saved-urls">歷史網址：</label>
@@ -1683,13 +1671,11 @@
                 
                 <div style="display: flex; justify-content: center; margin: 25px 0;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
-                        <button onclick="fetchSingleQuoteGoogleSheetsData()" style="background: white; color: #333; border: 2px solid #ddd; width: 50px; height: 50px; font-size: 18px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" title="讀取試算表資料">
+                        <div></div>
+                        <button onclick="fetchSingleQuoteGoogleSheetsData()" style="background: white; color: #333; border: 2px solid #ddd; width: 60px; height: 60px; font-size: 24px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-left: 4px;" title="讀取試算表資料">
                             ⇄
                         </button>
-                        <button class="btn quote" onclick="generateSingleQuote()">∞</button>
-                        <button onclick="clearSingleQuoteForm()" style="background: #6c757d; color: white; border: none; width: 50px; height: 50px; font-size: 14px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: 600; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);" title="清空表單" onmouseover="this.style.background='#5a6268'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(108, 117, 125, 0.4)'" onmouseout="this.style.background='#6c757d'; this.style.transform='translateY(0px)'; this.style.boxShadow='0 2px 5px rgba(108, 117, 125, 0.3)'">
-                            ×
-                        </button>
+                        <div></div>
                     </div>
                 </div>
                 
@@ -1726,11 +1712,11 @@
         <div id="monthly" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">包月任務</h3>
-                    <button class="clear-btn-small" onclick="clearMonthlyForm()" title="清空表單">×</button>
-                </div>
-                <div class="info-box">
-                    💡 將報價資料轉換為包月任務執行單格式
+                    <div style="flex: 1;"></div>
+                    <h3 style="margin: 0; text-align: center;">包月任務</h3>
+                    <div style="flex: 1; display: flex; justify-content: flex-end;">
+                        <button class="clear-btn-small" onclick="clearMonthlyForm()" title="清空表單">×</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -1831,11 +1817,11 @@
         <div id="single" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">單趟任務</h3>
-                    <button class="clear-btn-small" onclick="clearSingleForm()" title="清空表單">×</button>
-                </div>
-                <div class="info-box">
-                    💡 將報價資料轉換為單次服務的任務執行單
+                    <div style="flex: 1;"></div>
+                    <h3 style="margin: 0; text-align: center;">單趟任務</h3>
+                    <div style="flex: 1; display: flex; justify-content: flex-end;">
+                        <button class="clear-btn-small" onclick="clearSingleForm()" title="清空表單">×</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -1962,11 +1948,11 @@
         <div id="clean" class="tab-content">
             <div class="section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">單次清潔</h3>
-                    <button class="clear-btn-small" onclick="clearCleanForm()" title="清空表單">×</button>
-                </div>
-                <div class="info-box">
-                    💡 將報價資料轉換為單次清潔服務的任務執行單
+                    <div style="flex: 1;"></div>
+                    <h3 style="margin: 0; text-align: center;">單次清潔</h3>
+                    <div style="flex: 1; display: flex; justify-content: flex-end;">
+                        <button class="clear-btn-small" onclick="clearCleanForm()" title="清空表單">×</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -2092,11 +2078,8 @@
         <!-- 外部價格頁面 -->
         <div id="vendor-pricing" class="tab-content">
             <div class="section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0;">外部價格管理</h3>
-                </div>
-                <div class="info-box">
-                    💡 管理外部廠商的價格資訊，支援直接編輯、新增刪除、資料儲存與匯出功能
+                <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; text-align: center;">外部價格管理</h3>
                 </div>
                 
                 <!-- 控制按鈕 -->
