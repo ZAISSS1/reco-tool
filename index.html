@@ -1307,44 +1307,64 @@
                     <!-- 第二行：垃圾包數到特殊需求（一行7個欄位） -->
                     <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;">
                         <div>
-                            <label for="manual-trash">垃圾包數：</label>
+                            <label for="manual-trash">垃圾數：</label>
                             <input type="number" id="manual-trash" placeholder="0" min="0" value="">
                         </div>
                         <div>
-                            <label for="manual-trash-volume">垃圾袋容量：</label>
-                            <select id="manual-trash-volume">
-                                <option value="">請選擇</option>
-                                <option value="14公升">14公升</option>
-                                <option value="25公升">25公升</option>
-                                <option value="75公升">75公升</option>
-                                <option value="76公升">76公升</option>
-                            </select>
+                            <label style="color: #ff4444;">垃圾袋容量：</label>
+                            <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: nowrap;">
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-trash-volume" value="0公升" style="width: 14px; height: 14px; margin-right: 4px;"> 0公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-trash-volume" value="14公升" style="width: 14px; height: 14px; margin-right: 4px;"> 14公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-trash-volume" value="25公升" style="width: 14px; height: 14px; margin-right: 4px;"> 25公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-trash-volume" value="75公升" style="width: 14px; height: 14px; margin-right: 4px;"> 75公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-trash-volume" value="76公升" style="width: 14px; height: 14px; margin-right: 4px;"> 76公升
+                                </label>
+                            </div>
                         </div>
                         <div>
-                            <label for="manual-recycle">資源包數：</label>
+                            <label for="manual-recycle">資源數：</label>
                             <input type="number" id="manual-recycle" placeholder="0" min="0" value="">
                         </div>
                         <div>
-                            <label for="manual-recycle-volume">資源袋容量：</label>
-                            <select id="manual-recycle-volume">
-                                <option value="">請選擇</option>
-                                <option value="14公升">14公升</option>
-                                <option value="25公升">25公升</option>
-                                <option value="75公升">75公升</option>
-                                <option value="76公升">76公升</option>
-                            </select>
+                            <label style="color: #4488ff;">資源袋容量：</label>
+                            <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: nowrap;">
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-recycle-volume" value="0公升" style="width: 14px; height: 14px; margin-right: 4px;"> 0公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-recycle-volume" value="14公升" style="width: 14px; height: 14px; margin-right: 4px;"> 14公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-recycle-volume" value="25公升" style="width: 14px; height: 14px; margin-right: 4px;"> 25公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-recycle-volume" value="75公升" style="width: 14px; height: 14px; margin-right: 4px;"> 75公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="manual-recycle-volume" value="76公升" style="width: 14px; height: 14px; margin-right: 4px;"> 76公升
+                                </label>
+                            </div>
                         </div>
                         <div>
-                            <label for="manual-trash-max" style="color: #ff4444;">最多垃圾袋數：</label>
-                            <input type="number" id="manual-trash-max" placeholder="0" min="0" value="">
+                            <label for="manual-trash-max" style="color: #ff4444;">單次袋數：</label>
+                            <input type="number" id="manual-trash-max" placeholder="垃圾" min="0" value="">
                         </div>
                         <div>
-                            <label for="manual-recycle-max" style="color: #ff4444;">最多資源袋數：</label>
-                            <input type="number" id="manual-recycle-max" placeholder="0" min="0" value="">
+                            <label for="manual-recycle-max" style="color: #4488ff;">單次袋數：</label>
+                            <input type="number" id="manual-recycle-max" placeholder="資源" min="0" value="">
                         </div>
                         <div>
-                            <label for="manual-special-notes" style="color: #ffdd44;">特殊需求：</label>
-                            <input type="text" id="manual-special-notes" placeholder="特殊需求" value="">
+                            <label for="manual-special-notes" style="color: #ffdd44;">其他：</label>
+                            <input type="text" id="manual-special-notes" placeholder="其他" value="">
                         </div>
                     </div>
                 </div>
@@ -1487,44 +1507,64 @@
                     <!-- 第二行：垃圾包數到特殊需求（一行7個欄位） -->
                     <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;">
                         <div>
-                            <label for="trash-bags">垃圾包數：</label>
+                            <label for="trash-bags">垃圾數：</label>
                             <input type="number" id="trash-bags" min="0" placeholder="0">
                         </div>
                         <div>
-                            <label for="trash-volume">垃圾袋容量：</label>
-                            <select id="trash-volume">
-                                <option value="">請選擇</option>
-                                <option value="14公升">14公升</option>
-                                <option value="25公升">25公升</option>
-                                <option value="75公升">75公升</option>
-                                <option value="76公升">76公升</option>
-                            </select>
+                            <label style="color: #ff4444;">垃圾袋容量：</label>
+                            <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: nowrap;">
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="trash-volume" value="0公升" style="width: 14px; height: 14px; margin-right: 4px;"> 0公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="trash-volume" value="14公升" style="width: 14px; height: 14px; margin-right: 4px;"> 14公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="trash-volume" value="25公升" style="width: 14px; height: 14px; margin-right: 4px;"> 25公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="trash-volume" value="75公升" style="width: 14px; height: 14px; margin-right: 4px;"> 75公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="trash-volume" value="76公升" style="width: 14px; height: 14px; margin-right: 4px;"> 76公升
+                                </label>
+                            </div>
                         </div>
                         <div>
-                            <label for="recycle-bags">資源包數：</label>
+                            <label for="recycle-bags">資源數：</label>
                             <input type="number" id="recycle-bags" min="0" placeholder="0">
                         </div>
                         <div>
-                            <label for="recycle-volume">資源袋容量：</label>
-                            <select id="recycle-volume">
-                                <option value="">請選擇</option>
-                                <option value="14公升">14公升</option>
-                                <option value="25公升">25公升</option>
-                                <option value="75公升">75公升</option>
-                                <option value="76公升">76公升</option>
-                            </select>
+                            <label style="color: #4488ff;">資源袋容量：</label>
+                            <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: nowrap;">
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="recycle-volume" value="0公升" style="width: 14px; height: 14px; margin-right: 4px;"> 0公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="recycle-volume" value="14公升" style="width: 14px; height: 14px; margin-right: 4px;"> 14公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="recycle-volume" value="25公升" style="width: 14px; height: 14px; margin-right: 4px;"> 25公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="recycle-volume" value="75公升" style="width: 14px; height: 14px; margin-right: 4px;"> 75公升
+                                </label>
+                                <label style="display: flex; align-items: center; font-size: 13px; color: #e0e0e0; cursor: pointer; margin-bottom: 0; white-space: nowrap;">
+                                    <input type="radio" name="recycle-volume" value="76公升" style="width: 14px; height: 14px; margin-right: 4px;"> 76公升
+                                </label>
+                            </div>
                         </div>
                         <div>
-                            <label for="trash-max" style="color: #ff4444;">最多垃圾袋數：</label>
-                            <input type="number" id="trash-max" min="0" placeholder="0">
+                            <label for="trash-max" style="color: #ff4444;">單次袋數：</label>
+                            <input type="number" id="trash-max" min="0" placeholder="垃圾">
                         </div>
                         <div>
-                            <label for="recycle-max" style="color: #ff4444;">最多資源袋數：</label>
-                            <input type="number" id="recycle-max" min="0" placeholder="0">
+                            <label for="recycle-max" style="color: #4488ff;">單次袋數：</label>
+                            <input type="number" id="recycle-max" min="0" placeholder="資源">
                         </div>
                         <div>
-                            <label for="special-notes" style="color: #ffdd44;">特殊需求：</label>
-                            <input type="text" id="special-notes" placeholder="特殊需求">
+                            <label for="special-notes" style="color: #ffdd44;">其他：</label>
+                            <input type="text" id="special-notes" placeholder="其他">
                         </div>
                     </div>
                     
@@ -2194,9 +2234,17 @@
             const serviceTime = document.getElementById('service-time').value;
             const floorLevel = parseInt(document.getElementById('floor-level').value);
             const trashBags = document.getElementById('trash-bags').value;
-            const trashVolume = document.getElementById('trash-volume').value;
+            
+            // 獲取垃圾袋容量（單選）
+            const trashVolumeRadio = document.querySelector('input[name="trash-volume"]:checked');
+            const trashVolume = trashVolumeRadio ? trashVolumeRadio.value : '';
+            
             const recycleBags = document.getElementById('recycle-bags').value;
-            const recycleVolume = document.getElementById('recycle-volume').value;
+            
+            // 獲取資源袋容量（單選）
+            const recycleVolumeRadio = document.querySelector('input[name="recycle-volume"]:checked');
+            const recycleVolume = recycleVolumeRadio ? recycleVolumeRadio.value : '';
+            
             const trashMax = document.getElementById('trash-max').value;
             const recycleMax = document.getElementById('recycle-max').value;
             const monthlyFee = document.getElementById('monthly-fee').value;
@@ -3196,9 +3244,7 @@ ${otherDetails}
             document.getElementById('monthly-fee').value = '';
             document.getElementById('frequency').value = '';
             document.getElementById('trash-bags').value = '';
-            document.getElementById('trash-volume').value = '';
             document.getElementById('recycle-bags').value = '';
-            document.getElementById('recycle-volume').value = '';
             document.getElementById('trash-max').value = '';
             document.getElementById('recycle-max').value = '';
             document.getElementById('special-notes').value = '';
@@ -3208,6 +3254,14 @@ ${otherDetails}
             checkboxes.forEach(cb => cb.checked = false);
             document.querySelector('input[name="service-days"][value="週二"]').checked = true;
             document.querySelector('input[name="service-days"][value="週五"]').checked = true;
+            
+            // Clear trash volume radio buttons
+            const trashVolumeRadios = document.querySelectorAll('input[name="trash-volume"]');
+            trashVolumeRadios.forEach(radio => radio.checked = false);
+            
+            // Clear recycle volume radio buttons
+            const recycleVolumeRadios = document.querySelectorAll('input[name="recycle-volume"]');
+            recycleVolumeRadios.forEach(radio => radio.checked = false);
             
             // Hide output
             document.getElementById('quote-output').style.display = 'none';
@@ -3818,14 +3872,14 @@ ${otherDetails}
             document.getElementById('manual-frequency').value = '';
             document.getElementById('manual-trash').value = '';
             document.getElementById('manual-recycle').value = '';
-            document.getElementById('manual-trash-volume').value = '';
-            document.getElementById('manual-recycle-volume').value = '';
             document.getElementById('manual-trash-max').value = '';
             document.getElementById('manual-recycle-max').value = '';
             document.getElementById('manual-special-notes').value = '';
             
-            // 清空複選框
+            // 清空複選框和單選框
             document.querySelectorAll('input[name="manual-days"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="manual-trash-volume"]').forEach(rb => rb.checked = false);
+            document.querySelectorAll('input[name="manual-recycle-volume"]').forEach(rb => rb.checked = false);
             
             // 隱藏輸出區域
             document.getElementById('auto-detected-data').style.display = 'none';
@@ -4059,8 +4113,8 @@ ${otherDetails}
                 floor: document.getElementById('manual-floor').value || '',
                 trashBags: document.getElementById('manual-trash').value || '',
                 recycleBags: document.getElementById('manual-recycle').value || '',
-                trashVolume: document.getElementById('manual-trash-volume').value || '',
-                recycleVolume: document.getElementById('manual-recycle-volume').value || '',
+                trashVolume: document.querySelector('input[name="manual-trash-volume"]:checked')?.value || '',
+                recycleVolume: document.querySelector('input[name="manual-recycle-volume"]:checked')?.value || '',
                 trashMax: document.getElementById('manual-trash-max').value || '',
                 recycleMax: document.getElementById('manual-recycle-max').value || '',
                 specialNotes: document.getElementById('manual-special-notes').value || ''
@@ -4269,8 +4323,8 @@ ${otherDetails}
                     frequency: document.getElementById('manual-frequency').value || '',
                     trashBags: document.getElementById('manual-trash').value || '',
                     recycleBags: document.getElementById('manual-recycle').value || '',
-                    trashVolume: document.getElementById('manual-trash-volume').value || '',
-                    recycleVolume: document.getElementById('manual-recycle-volume').value || '',
+                    trashVolume: document.querySelector('input[name="manual-trash-volume"]:checked')?.value || '',
+                    recycleVolume: document.querySelector('input[name="manual-recycle-volume"]:checked')?.value || '',
                     trashMax: document.getElementById('manual-trash-max').value || '',
                     recycleMax: document.getElementById('manual-recycle-max').value || '',
                     specialNotes: document.getElementById('manual-special-notes').value || ''
@@ -6263,8 +6317,8 @@ ${keyNote}
                     frequency: document.getElementById('manual-frequency').value || '',
                     trashBags: document.getElementById('manual-trash').value || '',
                     recycleBags: document.getElementById('manual-recycle').value || '',
-                    trashVolume: document.getElementById('manual-trash-volume').value || '',
-                    recycleVolume: document.getElementById('manual-recycle-volume').value || '',
+                    trashVolume: document.querySelector('input[name="manual-trash-volume"]:checked')?.value || '',
+                    recycleVolume: document.querySelector('input[name="manual-recycle-volume"]:checked')?.value || '',
                     trashMax: document.getElementById('manual-trash-max').value || '',
                     recycleMax: document.getElementById('manual-recycle-max').value || '',
                     specialNotes: document.getElementById('manual-special-notes').value || ''
