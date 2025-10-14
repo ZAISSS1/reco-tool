@@ -1233,11 +1233,11 @@
                     <h4>🔗 Google試算表連結</h4>
                     <div style="display: flex; align-items: flex-end; gap: 10px; margin-bottom: 10px;">
                         <div style="flex: 2;">
-                            <label for="sheets-url">試算表網址：<small style="color: #888;">💡 設定為「知道連結的使用者」</small></label>
+                            <label for="sheets-url"></label>
                             <input type="text" id="sheets-url" placeholder="請貼上Google試算表的共享連結" style="width: 100%;" onchange="saveUrlToHistory()">
                         </div>
                         <div style="flex: 1;">
-                            <label for="saved-urls">歷史網址：</label>
+                            <label for="saved-urls"></label>
                             <select id="saved-urls" onchange="loadSavedUrl()" style="width: 100%;">
                                 <option value="">選擇歷史網址</option>
                             </select>
@@ -1401,30 +1401,23 @@
                 </div>
                 
                 <div style="display: flex; justify-content: center; margin: 25px 0;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
-                        <div></div>
-                        <button onclick="fetchGoogleSheetsData()" style="background: white; color: #333; border: 2px solid #ddd; width: 60px; height: 60px; font-size: 24px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-left: 4px;" title="讀取資料">
-                            ⇄
-                        </button>
-                        <div></div>
-                    </div>
+                    <button onclick="fetchGoogleSheetsData()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);" title="讀取資料">
+                        讀取資料
+                    </button>
                 </div>
                 
                 <div id="auto-sheets-status" class="status" style="display: none;"></div>
                 
                 <div class="form-group" id="auto-detected-data" style="display: none;">
-                    <h4>📋 偵測資料</h4>
+                    <h4>📋 目前資料</h4>
                     <div id="detected-data-preview" class="output-area" style="background: #2a2a2a; border: 1px solid #404040; border-radius: 8px; max-height: 300px; overflow-y: auto;"></div>
                 </div>
                 
                 <div class="form-group" id="auto-quote-controls" style="display: none;">
-                    <h4>⚡ 自動生成</h4>
                     <div style="display: flex; justify-content: center; margin: 20px 0;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
-                            <div></div>
-                            <button class="btn quote" onclick="generateAutoQuote()">∞</button>
-                            <div></div>
-                        </div>
+                        <button onclick="generateAutoQuote()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            自動生成
+                        </button>
                     </div>
                 </div>
                 
@@ -1437,7 +1430,11 @@
                 <div class="output-section" id="auto-quote-output" style="display: none;">
                     <h4>📄 自動生成的報價單</h4>
                     <div class="output-area" id="auto-quote-result-display"></div>
-                    <button class="copy-btn" onclick="copyAutoQuote()">⧉</button>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <button onclick="copyAutoQuote()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            一鍵複製
+                        </button>
+                    </div>
                     <div class="status" id="auto-quote-copy-status"></div>
                 </div>
                 
@@ -1568,7 +1565,11 @@
                         </div>
                     </div>
                     
-                    <button class="btn quote" onclick="generateQuote()">∞</button>
+                    <div style="display: flex; justify-content: center; margin: 25px 0;">
+                        <button onclick="generateQuote()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            生成報價
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- 競爭廠商比較區塊 -->
@@ -1580,7 +1581,11 @@
                 <div class="output-section" id="quote-output" style="display: none;">
                     <h4>📋 生成的報價單</h4>
                     <div class="output-area" id="quote-result"></div>
-                    <button class="copy-btn" onclick="copyToClipboard('quote-result')">⧉</button>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <button onclick="copyToClipboard('quote-result')" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            一鍵複製
+                        </button>
+                    </div>
                     <div class="status" id="quote-status"></div>
                 </div>
             </div>
@@ -1599,23 +1604,23 @@
                 
                 <div class="form-group">
                     <h4>🔗 Google試算表連結</h4>
-                    <div class="form-row" style="grid-template-columns: 2fr 1fr;">
-                        <div>
-                            <label for="single-quote-sheets-url">試算表網址：<small style="color: #888;">💡 設定為「知道連結的使用者」</small></label>
+                    <div style="display: flex; align-items: flex-end; gap: 10px; margin-bottom: 10px;">
+                        <div style="flex: 2;">
+                            <label for="single-quote-sheets-url"></label>
                             <input type="text" id="single-quote-sheets-url" placeholder="請貼上Google試算表的共享連結" style="width: 100%;" onchange="saveSingleQuoteUrlToHistory()">
                         </div>
-                        <div>
-                            <label for="single-quote-saved-urls">歷史網址：</label>
+                        <div style="flex: 1;">
+                            <label for="single-quote-saved-urls"></label>
                             <select id="single-quote-saved-urls" onchange="loadSingleQuoteSavedUrl()" style="width: 100%;">
                                 <option value="">選擇歷史網址</option>
                             </select>
                         </div>
-                    </div>
-                    
-                    <!-- 歷史網址管理 -->
-                    <div style="margin-top: 15px; text-align: center;">
-                        <button id="single-quote-manage-urls-btn" onclick="toggleSingleQuoteUrlManager()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 10px;">歷史網址</button>
-                        <button onclick="clearAllSingleQuoteUrls()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">清空全部</button>
+                        <div style="flex: 0 0 auto;">
+                            <button id="single-quote-manage-urls-btn" onclick="toggleSingleQuoteUrlManager()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; white-space: nowrap;">歷史網址</button>
+                        </div>
+                        <div style="flex: 0 0 auto;">
+                            <button onclick="clearAllSingleQuoteUrls()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; white-space: nowrap;">清空全部</button>
+                        </div>
                     </div>
                     
                     <div id="single-quote-url-manager" style="display: none; margin-top: 15px; padding: 15px; background: #2a2a2a; border-radius: 8px; border: 1px solid #404040;">
@@ -1639,7 +1644,7 @@
                 </div>
 
                 <div class="form-group">
-                    <h4>⚙️ 單趟垃圾代收設定</h4>
+                    <h4>⚙️ 資料輸入</h4>
                     
                     <!-- 第一行：日期、時間、有無上樓、一樓費用、上樓費用 -->
                     <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr;">
@@ -1723,37 +1728,34 @@
                 </div>
                 
                 <div style="display: flex; justify-content: center; margin: 25px 0;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
-                        <div></div>
-                        <button onclick="fetchSingleQuoteGoogleSheetsData()" style="background: white; color: #333; border: 2px solid #ddd; width: 60px; height: 60px; font-size: 24px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-left: 4px;" title="讀取試算表資料">
-                            ⇄
-                        </button>
-                        <div></div>
-                    </div>
+                    <button onclick="fetchSingleQuoteGoogleSheetsData()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);" title="讀取資料">
+                        讀取資料
+                    </button>
                 </div>
                 
                 <div id="single-quote-sheets-status" class="status" style="display: none;"></div>
                 
                 <div class="form-group" id="single-quote-detected-data" style="display: none;">
-                    <h4>📋 偵測資料</h4>
+                    <h4>📋 目前資料</h4>
                     <div id="single-quote-detected-data-preview" class="output-area" style="background: #2a2a2a; border: 1px solid #404040; border-radius: 8px; max-height: 300px; overflow-y: auto;"></div>
                 </div>
                 
                 <div class="form-group" id="single-quote-controls" style="display: none;">
-                    <h4>⚡ 自動生成</h4>
                     <div style="display: flex; justify-content: center; margin: 20px 0;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 600px;">
-                            <div></div>
-                            <button class="btn quote" onclick="generateSingleQuote()">∞</button>
-                            <div></div>
-                        </div>
+                        <button onclick="generateSingleQuote()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            自動生成
+                        </button>
                     </div>
                 </div>
                 
                 <div class="output-section" id="single-quote-output" style="display: none;">
                     <h4>📄 單趟垃圾代收報價單</h4>
                     <div class="output-area" id="single-quote-result-display"></div>
-                    <button class="copy-btn" onclick="copySingleQuote()">⧉</button>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <button onclick="copySingleQuote()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            一鍵複製
+                        </button>
+                    </div>
                     <div class="status" id="single-quote-copy-status"></div>
                 </div>
                 
@@ -1857,7 +1859,11 @@
                     <label for="monthly-quote-data">貼上報價資料：</label>
                     <textarea id="monthly-quote-data" placeholder="請在此貼上完整的報價資料..." style="height: 200px;"></textarea>
                     
-                    <button class="btn monthly" onclick="generateMonthlyTask()">∞</button>
+                    <div style="display: flex; justify-content: center; margin: 25px 0;">
+                        <button onclick="generateMonthlyTask()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            生成任務
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="output-section" id="monthly-output" style="display: none;">
@@ -1866,12 +1872,20 @@
                         <div>
                             <h5>一般版任務單</h5>
                             <div class="output-area" id="monthly-general"></div>
-                            <button class="copy-btn" onclick="copyToClipboard('monthly-general')">⧉</button>
+                            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                                <button onclick="copyToClipboard('monthly-general')" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                                    一鍵複製
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <h5>限制版任務單</h5>
                             <div class="output-area" id="monthly-limited"></div>
-                            <button class="copy-btn" onclick="copyToClipboard('monthly-limited')">⧉</button>
+                            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                                <button onclick="copyToClipboard('monthly-limited')" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                                    一鍵複製
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="status" id="monthly-status"></div>
@@ -1985,7 +1999,7 @@
                         </div>
                     </div>
                     
-                    <h4>📷 現況照片上傳</h4>
+                    <h4>📷 照片上傳</h4>
                     
                     <!-- 照片功能一行式布局 -->
                     <div class="photo-upload-row" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: stretch; margin-bottom: 15px; min-height: 110px;">
@@ -2011,13 +2025,21 @@
                     <!-- 合併照片顯示區域 - 移到下方 -->
                     <div id="single-merged-preview" style="width: 100%; margin-bottom: 15px; display: flex; justify-content: center;"></div>
                     
-                    <button class="btn single" onclick="generateSingleTask()">∞</button>
+                    <div style="display: flex; justify-content: center; margin: 25px 0;">
+                        <button onclick="generateSingleTask()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            生成任務
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="output-section" id="single-output" style="display: none;">
                     <h4>📋 單趟任務單</h4>
                     <div class="output-area" id="single-result"></div>
-                    <button class="copy-btn" onclick="copyToClipboard('single-result')">⧉</button>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <button onclick="copyToClipboard('single-result')" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            一鍵複製
+                        </button>
+                    </div>
                     <div class="status" id="single-status"></div>
                 </div>
             </div>
@@ -2129,7 +2151,7 @@
                         </div>
                     </div>
                     
-                    <h4>📷 現況照片上傳</h4>
+                    <h4>📷 照片上傳</h4>
                     
                     <!-- 照片功能一行式布局 -->
                     <div class="photo-upload-row" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: stretch; margin-bottom: 15px; min-height: 110px;">
@@ -2155,13 +2177,21 @@
                     <!-- 合併照片顯示區域 - 移到下方 -->
                     <div id="clean-merged-preview" style="width: 100%; margin-bottom: 15px; display: flex; justify-content: center;"></div>
                     
-                    <button class="btn clean" onclick="generateCleanTask()">∞</button>
+                    <div style="display: flex; justify-content: center; margin: 25px 0;">
+                        <button onclick="generateCleanTask()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            生成任務
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="output-section" id="clean-output" style="display: none;">
                     <h4>📋 清潔任務單</h4>
                     <div class="output-area" id="clean-result"></div>
-                    <button class="copy-btn" onclick="copyToClipboard('clean-result')">⧉</button>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <button onclick="copyToClipboard('clean-result')" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            一鍵複製
+                        </button>
+                    </div>
                     <div class="status" id="clean-status"></div>
                 </div>
             </div>
