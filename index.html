@@ -2269,7 +2269,6 @@
 （蛋糕盒/緩衝材料➡️垃圾）
 
 一個月費用：${monthlyFee}元
-（上樓代收需提供1樓大門鑰匙）
 ${keyNote}
 
 -
@@ -4520,6 +4519,10 @@ ${otherDetails}
                 collectionTimeDesc = '中午前';
             }
 
+            // 鑰匙提示 - 根據樓層動態生成
+            const keyNote = floorNum > 1 ? '（上樓代收需提供1樓大門鑰匙）' : 
+                           floorNum < 0 ? '（地下室代收需提供地下室鑰匙）' : '';
+
             // 服務星期格式化
             let daysDisplay = serviceDays;
             if (serviceDays.includes('週')) {
@@ -4647,7 +4650,7 @@ ${serviceSchedule}
 （蛋糕盒/緩衝材料➡️垃圾）
 
 一個月費用：${monthlyFee}元
-（上樓代收需提供1樓大門鑰匙）
+${keyNote}
 
 -
 📑配合事項📑
