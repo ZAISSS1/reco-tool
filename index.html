@@ -47,6 +47,16 @@
             font-size: clamp(1.5rem, 4vw, 2.5rem);
             font-weight: bold;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
         }
 
         .tabs {
@@ -1192,7 +1202,10 @@
     <button id="logout-btn" class="logout-btn" onclick="logout()" style="display: none;">登出</button>
     <div class="container">
         <div class="header">
-            <h1>聯能永續-報價模組</h1>
+            <h1>
+                <img src="favicon.png" alt="Logo" class="header-logo">
+                聯能永續-報價模組
+            </h1>
         </div>
         
         <div class="tabs">
