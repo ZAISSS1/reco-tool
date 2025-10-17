@@ -2433,15 +2433,18 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             let address = '';
             let phone = '';
             let name = '';
+            let remainingText = input;
             
-            // 檢查是否為標籤格式（地址：xxx 電話：xxx 聯絡人：xxx）
-            if (input.includes('：') || input.includes(':')) {
-                const lines = input.split('\n');
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (!trimmedLine) continue;
-                    
-                    // 使用中文冒號或英文冒號分割
+            // 先处理带标签的格式（地址：xxx 電話：xxx 等）
+            const lines = input.split('\n');
+            const processedLines = [];
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) continue;
+                
+                // 检查是否包含标签
+                if (trimmedLine.includes('：') || trimmedLine.includes(':')) {
                     const parts = trimmedLine.split(/[：:]/);
                     if (parts.length >= 2) {
                         const label = parts[0].trim();
@@ -2449,61 +2452,82 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
                         
                         if (label.includes('地址')) {
                             address = value;
+                            continue; // 已处理，跳过
                         } else if (label.includes('電話') || label.includes('电话')) {
                             phone = value;
+                            continue; // 已处理，跳过
                         } else if (label.includes('聯絡人') || label.includes('联络人') || label.includes('姓名') || label.includes('客戶')) {
                             name = value;
+                            continue; // 已处理，跳过
                         }
                     }
                 }
-            } else {
-                // 原有的智能識別邏輯
-                const text = input.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
                 
-                // 1. 提取電話號碼
-                const phonePatterns = [
-                    /09\d{8}/,
-                    /\d{2,4}-\d{6,8}/,
-                    /\d{10}/
-                ];
+                // 未处理的行添加到待处理文本
+                processedLines.push(trimmedLine);
+            }
+            
+            // 如果还有未处理的文本（电话和姓名可能在同一行）
+            if (processedLines.length > 0) {
+                const text = processedLines.join(' ').replace(/\s+/g, ' ').trim();
                 
-                for (const pattern of phonePatterns) {
-                    const phoneMatch = text.match(pattern);
-                    if (phoneMatch) {
-                        phone = phoneMatch[0];
-                        break;
+                // 1. 提取電話號碼（如果还没有）
+                if (!phone) {
+                    const phonePatterns = [
+                        /09\d{2}[-\s]?\d{3}[-\s]?\d{3}/,  // 09XX-XXX-XXX 或 09XXXXXXXX
+                        /09\d{8}/,                        // 09XXXXXXXX
+                        /\d{2,4}[-\s]?\d{6,8}/,          // 固定电话
+                        /\d{10}/                          // 10位数字
+                    ];
+                    
+                    for (const pattern of phonePatterns) {
+                        const phoneMatch = text.match(pattern);
+                        if (phoneMatch) {
+                            phone = phoneMatch[0].replace(/\s/g, '');  // 去除空格
+                            break;
+                        }
                     }
                 }
                 
-                // 2. 提取姓名
-                const namePatterns = [
-                    /([^\d\s]{2,4}(?:先生|小姐|女士))/,
-                    /\s([^\d\s]{2,4})\s*$/,
-                    /([^\d\s]{2,4})\s*$/
-                ];
-                
-                for (const pattern of namePatterns) {
-                    const nameMatch = text.match(pattern);
-                    if (nameMatch) {
-                        name = nameMatch[1].trim();
-                        break;
+                // 2. 提取姓名（如果还没有，优先识别带称谓和三个字的中文姓名）
+                if (!name) {
+                    const namePatterns = [
+                        { pattern: /([^\d\s]{1,4}(?:先生|小姐|女士))/, withTitle: true },  // 带称谓的姓名（X先生、X小姐）
+                        { pattern: /([^\d\s]{3})\s/, withTitle: false },                    // 三个字的姓名（后面有空格）
+                        { pattern: /\s([^\d\s]{3})\s/, withTitle: false },                  // 三个字的姓名（前后都有空格）
+                        { pattern: /([^\d\s]{3})$/, withTitle: false },                     // 三个字的姓名（在末尾）
+                        { pattern: /\s([^\d\s]{2,4})\s*$/, withTitle: false },             // 2-4个字的姓名（在末尾）
+                        { pattern: /([^\d\s]{2,4})\s*$/, withTitle: false }                // 2-4个字的姓名
+                    ];
+                    
+                    for (const item of namePatterns) {
+                        const nameMatch = text.match(item.pattern);
+                        if (nameMatch) {
+                            name = nameMatch[1].trim();
+                            // 带称谓的直接接受，不带称谓的需要检查是否为中文
+                            if (item.withTitle || /^[\u4e00-\u9fa5]{2,4}$/.test(name)) {
+                                break;
+                            }
+                        }
                     }
                 }
                 
-                // 3. 提取地址
-                let remainingText = text;
-                if (phone) {
-                    remainingText = remainingText.replace(phone, '');
-                }
-                if (name) {
-                    remainingText = remainingText.replace(name, '');
-                }
-                
-                address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
-                
-                const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
-                if (!addressKeywords.some(keyword => address.includes(keyword))) {
-                    address = remainingText.trim();
+                // 3. 提取地址（如果还没有）
+                if (!address) {
+                    let remainingText = text;
+                    if (phone) {
+                        remainingText = remainingText.replace(phone, '');
+                    }
+                    if (name) {
+                        remainingText = remainingText.replace(name, '');
+                    }
+                    
+                    address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
+                    
+                    const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
+                    if (!addressKeywords.some(keyword => address.includes(keyword))) {
+                        address = remainingText.trim();
+                    }
                 }
             }
             
@@ -2518,16 +2542,37 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
                 document.getElementById('monthly-name').value = name;
             }
             
-            // 4. 自動判斷上樓選項
+            // 4. 自動判斷上樓選項和鑰匙選項
             let upstairsOption = '';
+            let keyOption = '';
             if (address) {
+                // 提取楼层数字
+                const floorMatch = address.match(/(\d+)樓|(\d+)F|(\d+)层|(\d+)層/);
+                
                 if (address.includes('電梯') || address.includes('电梯')) {
                     upstairsOption = '電梯';
-                } else if (address.match(/[0-9]+樓|[0-9]+F|[0-9]+层|[0-9]+層|地下.*樓/)) {
+                } else if (floorMatch) {
+                    const floorNumber = parseInt(floorMatch[1] || floorMatch[2] || floorMatch[3] || floorMatch[4]);
+                    
+                    // 1楼选择"不用上樓"和"無"钥匙，2楼以上选择"需上樓"和"有"钥匙
+                    if (floorNumber === 1) {
+                        upstairsOption = '不用上樓';
+                        keyOption = '無';
+                        document.getElementById('monthly-key').value = '無';
+                    } else if (floorNumber >= 2) {
+                        upstairsOption = '需上樓';
+                        keyOption = '有';
+                        document.getElementById('monthly-key').value = '有';
+                    }
+                } else if (address.match(/地下.*樓/)) {
                     upstairsOption = '需上樓';
                 } else {
+                    // 没有楼层信息
                     upstairsOption = '不用上樓';
+                    keyOption = '無';
+                    document.getElementById('monthly-key').value = '無';
                 }
+                
                 document.getElementById('monthly-upstairs').value = upstairsOption;
             }
             
@@ -2536,7 +2581,8 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             if (address) resultMsg += `地址：${address}\n`;
             if (phone) resultMsg += `電話：${phone}\n`;
             if (name) resultMsg += `姓名：${name}\n`;
-            if (upstairsOption) resultMsg += `上樓：${upstairsOption}`;
+            if (upstairsOption) resultMsg += `上樓：${upstairsOption}\n`;
+            if (keyOption) resultMsg += `鑰匙：${keyOption}`;
             
             if (!address && !phone && !name) {
                 alert('❌ 無法識別資料，請檢查格式');
@@ -2561,13 +2607,15 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             let phone = '';
             let name = '';
             
-            // 檢查是否為標籤格式
-            if (input.includes('：') || input.includes(':')) {
-                const lines = input.split('\n');
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (!trimmedLine) continue;
-                    
+            // 先处理带标签的格式
+            const lines = input.split('\n');
+            const processedLines = [];
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) continue;
+                
+                if (trimmedLine.includes('：') || trimmedLine.includes(':')) {
                     const parts = trimmedLine.split(/[：:]/);
                     if (parts.length >= 2) {
                         const label = parts[0].trim();
@@ -2575,56 +2623,98 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
                         
                         if (label.includes('地址')) {
                             address = value;
+                            continue;
                         } else if (label.includes('電話') || label.includes('电话')) {
                             phone = value;
+                            continue;
                         } else if (label.includes('聯絡人') || label.includes('联络人') || label.includes('姓名') || label.includes('客戶')) {
                             name = value;
+                            continue;
                         }
                     }
                 }
-            } else {
-                // 原有的智能識別邏輯
-                const text = input.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-                const phonePatterns = [/09\d{8}/, /\d{2,4}-\d{6,8}/, /\d{10}/];
-                for (const pattern of phonePatterns) {
-                    const phoneMatch = text.match(pattern);
-                    if (phoneMatch) {
-                        phone = phoneMatch[0];
-                        break;
+                
+                processedLines.push(trimmedLine);
+            }
+            
+            // 处理未标记的文本
+            if (processedLines.length > 0) {
+                const text = processedLines.join(' ').replace(/\s+/g, ' ').trim();
+                
+                if (!phone) {
+                    const phonePatterns = [
+                        /09\d{2}[-\s]?\d{3}[-\s]?\d{3}/,
+                        /09\d{8}/,
+                        /\d{2,4}[-\s]?\d{6,8}/,
+                        /\d{10}/
+                    ];
+                    for (const pattern of phonePatterns) {
+                        const phoneMatch = text.match(pattern);
+                        if (phoneMatch) {
+                            phone = phoneMatch[0].replace(/\s/g, '');
+                            break;
+                        }
                     }
                 }
                 
-                const namePatterns = [/([^\d\s]{2,4}(?:先生|小姐|女士))/, /\s([^\d\s]{2,4})\s*$/, /([^\d\s]{2,4})\s*$/];
-                for (const pattern of namePatterns) {
-                    const nameMatch = text.match(pattern);
-                    if (nameMatch) {
-                        name = nameMatch[1].trim();
-                        break;
+                if (!name) {
+                    const namePatterns = [
+                        { pattern: /([^\d\s]{1,4}(?:先生|小姐|女士))/, withTitle: true },
+                        { pattern: /([^\d\s]{3})\s/, withTitle: false },
+                        { pattern: /\s([^\d\s]{3})\s/, withTitle: false },
+                        { pattern: /([^\d\s]{3})$/, withTitle: false },
+                        { pattern: /\s([^\d\s]{2,4})\s*$/, withTitle: false },
+                        { pattern: /([^\d\s]{2,4})\s*$/, withTitle: false }
+                    ];
+                    for (const item of namePatterns) {
+                        const nameMatch = text.match(item.pattern);
+                        if (nameMatch) {
+                            name = nameMatch[1].trim();
+                            if (item.withTitle || /^[\u4e00-\u9fa5]{2,4}$/.test(name)) {
+                                break;
+                            }
+                        }
                     }
                 }
                 
-                let remainingText = text;
-                if (phone) remainingText = remainingText.replace(phone, '');
-                if (name) remainingText = remainingText.replace(name, '');
-                address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
-                
-                const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
-                if (!addressKeywords.some(keyword => address.includes(keyword))) {
-                    address = remainingText.trim();
+                if (!address) {
+                    let remainingText = text;
+                    if (phone) remainingText = remainingText.replace(phone, '');
+                    if (name) remainingText = remainingText.replace(name, '');
+                    address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
+                    
+                    const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
+                    if (!addressKeywords.some(keyword => address.includes(keyword))) {
+                        address = remainingText.trim();
+                    }
                 }
             }
             
-            // 填充到單趟任務欄位
+            // 填充欄位
             if (address) document.getElementById('single-address').value = address;
             if (phone) document.getElementById('single-phone').value = phone;
             if (name) document.getElementById('single-name').value = name;
             
-            // 自動判斷上樓選項
+            // 自動判斷上樓和鑰匙
             let upstairsOption = '';
+            let keyOption = '';
             if (address) {
+                const floorMatch = address.match(/(\d+)樓|(\d+)F|(\d+)层|(\d+)層/);
+                
                 if (address.includes('電梯') || address.includes('电梯')) {
                     upstairsOption = '電梯';
-                } else if (address.match(/[0-9]+樓|[0-9]+F|[0-9]+层|[0-9]+層|地下.*樓/)) {
+                } else if (floorMatch) {
+                    const floorNumber = parseInt(floorMatch[1] || floorMatch[2] || floorMatch[3] || floorMatch[4]);
+                    if (floorNumber === 1) {
+                        upstairsOption = '不用上樓';
+                        keyOption = '無';
+                        document.getElementById('single-key').value = '無';
+                    } else if (floorNumber >= 2) {
+                        upstairsOption = '需上樓';
+                        keyOption = '有';
+                        document.getElementById('single-key').value = '有';
+                    }
+                } else if (address.match(/地下.*樓/)) {
                     upstairsOption = '需上樓';
                 } else {
                     upstairsOption = '不用上樓';
@@ -2632,12 +2722,13 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
                 document.getElementById('single-upstairs').value = upstairsOption;
             }
             
-            // 顯示結果提示
+            // 顯示結果
             let resultMsg = '✅ 自動分類完成：\n';
             if (address) resultMsg += `地址：${address}\n`;
             if (phone) resultMsg += `電話：${phone}\n`;
             if (name) resultMsg += `姓名：${name}\n`;
-            if (upstairsOption) resultMsg += `上樓：${upstairsOption}`;
+            if (upstairsOption) resultMsg += `上樓：${upstairsOption}\n`;
+            if (keyOption) resultMsg += `鑰匙：${keyOption}`;
             
             if (!address && !phone && !name) {
                 alert('❌ 無法識別資料，請檢查格式');
@@ -2661,13 +2752,15 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
             let phone = '';
             let name = '';
             
-            // 檢查是否為標籤格式
-            if (input.includes('：') || input.includes(':')) {
-                const lines = input.split('\n');
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (!trimmedLine) continue;
-                    
+            // 先处理带标签的格式
+            const lines = input.split('\n');
+            const processedLines = [];
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) continue;
+                
+                if (trimmedLine.includes('：') || trimmedLine.includes(':')) {
                     const parts = trimmedLine.split(/[：:]/);
                     if (parts.length >= 2) {
                         const label = parts[0].trim();
@@ -2675,56 +2768,98 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
                         
                         if (label.includes('地址')) {
                             address = value;
+                            continue;
                         } else if (label.includes('電話') || label.includes('电话')) {
                             phone = value;
+                            continue;
                         } else if (label.includes('聯絡人') || label.includes('联络人') || label.includes('姓名') || label.includes('客戶')) {
                             name = value;
+                            continue;
                         }
                     }
                 }
-            } else {
-                // 原有的智能識別邏輯
-                const text = input.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-                const phonePatterns = [/09\d{8}/, /\d{2,4}-\d{6,8}/, /\d{10}/];
-                for (const pattern of phonePatterns) {
-                    const phoneMatch = text.match(pattern);
-                    if (phoneMatch) {
-                        phone = phoneMatch[0];
-                        break;
+                
+                processedLines.push(trimmedLine);
+            }
+            
+            // 处理未标记的文本
+            if (processedLines.length > 0) {
+                const text = processedLines.join(' ').replace(/\s+/g, ' ').trim();
+                
+                if (!phone) {
+                    const phonePatterns = [
+                        /09\d{2}[-\s]?\d{3}[-\s]?\d{3}/,
+                        /09\d{8}/,
+                        /\d{2,4}[-\s]?\d{6,8}/,
+                        /\d{10}/
+                    ];
+                    for (const pattern of phonePatterns) {
+                        const phoneMatch = text.match(pattern);
+                        if (phoneMatch) {
+                            phone = phoneMatch[0].replace(/\s/g, '');
+                            break;
+                        }
                     }
                 }
                 
-                const namePatterns = [/([^\d\s]{2,4}(?:先生|小姐|女士))/, /\s([^\d\s]{2,4})\s*$/, /([^\d\s]{2,4})\s*$/];
-                for (const pattern of namePatterns) {
-                    const nameMatch = text.match(pattern);
-                    if (nameMatch) {
-                        name = nameMatch[1].trim();
-                        break;
+                if (!name) {
+                    const namePatterns = [
+                        { pattern: /([^\d\s]{1,4}(?:先生|小姐|女士))/, withTitle: true },
+                        { pattern: /([^\d\s]{3})\s/, withTitle: false },
+                        { pattern: /\s([^\d\s]{3})\s/, withTitle: false },
+                        { pattern: /([^\d\s]{3})$/, withTitle: false },
+                        { pattern: /\s([^\d\s]{2,4})\s*$/, withTitle: false },
+                        { pattern: /([^\d\s]{2,4})\s*$/, withTitle: false }
+                    ];
+                    for (const item of namePatterns) {
+                        const nameMatch = text.match(item.pattern);
+                        if (nameMatch) {
+                            name = nameMatch[1].trim();
+                            if (item.withTitle || /^[\u4e00-\u9fa5]{2,4}$/.test(name)) {
+                                break;
+                            }
+                        }
                     }
                 }
                 
-                let remainingText = text;
-                if (phone) remainingText = remainingText.replace(phone, '');
-                if (name) remainingText = remainingText.replace(name, '');
-                address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
-                
-                const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
-                if (!addressKeywords.some(keyword => address.includes(keyword))) {
-                    address = remainingText.trim();
+                if (!address) {
+                    let remainingText = text;
+                    if (phone) remainingText = remainingText.replace(phone, '');
+                    if (name) remainingText = remainingText.replace(name, '');
+                    address = remainingText.replace(/\//g, '').replace(/\s+/g, '').trim();
+                    
+                    const addressKeywords = ['區', '路', '街', '巷', '弄', '號', '樓', '室', '市', '縣', '鄉', '鎮', '村'];
+                    if (!addressKeywords.some(keyword => address.includes(keyword))) {
+                        address = remainingText.trim();
+                    }
                 }
             }
             
-            // 填充到單次清潔欄位
+            // 填充欄位
             if (address) document.getElementById('clean-address').value = address;
             if (phone) document.getElementById('clean-phone').value = phone;
             if (name) document.getElementById('clean-name').value = name;
             
-            // 自動判斷上樓選項
+            // 自動判斷上樓和鑰匙
             let upstairsOption = '';
+            let keyOption = '';
             if (address) {
+                const floorMatch = address.match(/(\d+)樓|(\d+)F|(\d+)层|(\d+)層/);
+                
                 if (address.includes('電梯') || address.includes('电梯')) {
                     upstairsOption = '電梯';
-                } else if (address.match(/[0-9]+樓|[0-9]+F|[0-9]+层|[0-9]+層|地下.*樓/)) {
+                } else if (floorMatch) {
+                    const floorNumber = parseInt(floorMatch[1] || floorMatch[2] || floorMatch[3] || floorMatch[4]);
+                    if (floorNumber === 1) {
+                        upstairsOption = '不用上樓';
+                        keyOption = '無';
+                        document.getElementById('clean-key').value = '無';
+                    } else if (floorNumber >= 2) {
+                        upstairsOption = '需上樓';
+                        keyOption = '有';
+                        document.getElementById('clean-key').value = '有';
+                    }
+                } else if (address.match(/地下.*樓/)) {
                     upstairsOption = '需上樓';
                 } else {
                     upstairsOption = '不用上樓';
@@ -2732,12 +2867,13 @@ ${specialNotes ? `特殊需求：${specialNotes}` : ''}`;
                 document.getElementById('clean-upstairs').value = upstairsOption;
             }
             
-            // 顯示結果提示
+            // 顯示結果
             let resultMsg = '✅ 自動分類完成：\n';
             if (address) resultMsg += `地址：${address}\n`;
             if (phone) resultMsg += `電話：${phone}\n`;
             if (name) resultMsg += `姓名：${name}\n`;
-            if (upstairsOption) resultMsg += `上樓：${upstairsOption}`;
+            if (upstairsOption) resultMsg += `上樓：${upstairsOption}\n`;
+            if (keyOption) resultMsg += `鑰匙：${keyOption}`;
             
             if (!address && !phone && !name) {
                 alert('❌ 無法識別資料，請檢查格式');
