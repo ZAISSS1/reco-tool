@@ -3442,6 +3442,7 @@ ${otherDetails}
 
         function clearMonthlyForm() {
             document.getElementById('monthly-quote-data').value = '';
+            document.getElementById('smart-input-monthly').value = '';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('monthly-date').value = today;
             document.getElementById('monthly-time').value = '';
@@ -3464,6 +3465,7 @@ ${otherDetails}
         }
 
         function clearSingleForm() {
+            document.getElementById('smart-input-single').value = '';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('single-date').value = today;
             document.getElementById('single-time').value = '';
@@ -3504,6 +3506,7 @@ ${otherDetails}
         }
 
         function clearCleanForm() {
+            document.getElementById('smart-input-clean').value = '';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('clean-date').value = today;
             document.getElementById('clean-time').value = '';
@@ -3511,6 +3514,7 @@ ${otherDetails}
             document.getElementById('clean-name').value = '';
             document.getElementById('clean-address').value = '';
             document.getElementById('clean-upstairs').value = '';
+            document.getElementById('clean-key').value = '';
             document.getElementById('clean-fee').value = '';
             
             // 重置動態其他說明區域 - 只保留第一個
