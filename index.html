@@ -7477,14 +7477,14 @@ ${keyNote}
                     </table>
                 `;
                 
-                document。getElementById('quote-vendor-comparison-table')。innerHTML = tableHtml;
-                document.getElementById('quote-vendor-comparison')。style.display = 'block';
+                document.getElementById('quote-vendor-comparison-table').innerHTML = tableHtml;
+                document.getElementById('quote-vendor-comparison').style.display = 'block';
                 
                 console.log('Quote vendor comparison generated successfully');
                 
             } catch (error) {
                 console.error('Error generating quote vendor comparison:', error);
-                document.getElementById('quote-vendor-comparison-table')。innerHTML = '<div class="no-comparison">載入競爭廠商資料失敗</div>';
+                document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">載入競爭廠商資料失敗</div>';
                 document.getElementById('quote-vendor-comparison').style.display = 'block';
             }
         }
@@ -7513,8 +7513,8 @@ ${keyNote}
                 }
                 
                 console.log('Customer frequency:', frequency);
-                console。log('FieldMapping frequency:'， fieldMapping。frequency);
-                console。log('FieldMapping weeklyFrequency:'， fieldMapping.weeklyFrequency);
+                console.log('FieldMapping frequency:', fieldMapping.frequency);
+                console.log('FieldMapping weeklyFrequency:', fieldMapping.weeklyFrequency);
                 
                 if (frequency === 0) {
                     document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定一週次數，無法進行廠商比較</div>';
