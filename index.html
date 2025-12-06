@@ -2121,10 +2121,10 @@
                             </button>
                         </div>
                         <div id="clean-scope-container">
-                            <!-- 項目1（預設） -->
+                            <!-- 照片項目1（預設） -->
                             <div class="clean-scope-item" id="clean-scope-item-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                                 <div style="flex: 0 0 100px;">
-                                    <label>項目1：</label>
+                                    <label>照片項目1：</label>
                                 </div>
                                 <div style="flex: 1;">
                                     <input type="text" id="clean-scope-1" placeholder="清潔項目 1" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -3544,7 +3544,7 @@ ${otherDetails}
             scopeContainer.innerHTML = `
                 <div class="clean-scope-item" id="clean-scope-item-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
                     <div style="flex: 0 0 100px;">
-                        <label>項目1：</label>
+                        <label>照片項目1：</label>
                     </div>
                     <div style="flex: 1;">
                         <input type="text" id="clean-scope-1" placeholder="清潔項目 1" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -3894,9 +3894,11 @@ ${otherDetails}
             
             for (let i = 0; i < displayCount; i++) {
                 const image = cleanImages[i];
+                const photoNumber = i + 1;
                 previewHTML += `
                     <div class="photo-preview-inline" style="position: relative; display: inline-block;">
-                        <img src="${image.dataUrl}" alt="Photo ${i + 1}" style="width: 60px; height: 45px; object-fit: cover; border-radius: 3px; border: 1px solid #444;">
+                        <img src="${image.dataUrl}" alt="Photo ${photoNumber}" style="width: 60px; height: 45px; object-fit: cover; border-radius: 3px; border: 1px solid #444;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: #fff; font-size: 16px; font-weight: bold; padding: 2px 6px; border-radius: 4px; pointer-events: none;">${photoNumber}</div>
                         <button class="photo-remove-inline" onclick="removeCleanImage(${image.id})" title="刪除照片" style="position: absolute; top: -5px; right: -5px; background: rgba(231, 76, 60, 0.9); color: white; border: none; border-radius: 50%; width: 16px; height: 16px; cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center;">×</button>
                     </div>
                 `;
@@ -4012,6 +4014,19 @@ ${otherDetails}
                     ctx.strokeStyle = '#FF0000';
                     ctx.lineWidth = 2;
                     ctx.strokeRect(x, y, imageSize, imageSize);
+                    
+                    // Draw number label at bottom-left corner
+                    const photoNumber = index + 1;
+                    const fontSize = Math.max(16, Math.floor(imageSize / 6));
+                    ctx.font = `bold ${fontSize}px Arial`;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    const textWidth = ctx.measureText(photoNumber.toString()).width;
+                    const padding = 4;
+                    const labelX = x + padding;
+                    const labelY = y + imageSize - fontSize - padding;
+                    ctx.fillRect(labelX - padding, labelY - padding, textWidth + padding * 2, fontSize + padding * 2);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillText(photoNumber.toString(), labelX, labelY + fontSize - 2);
                 });
                 
                 
@@ -5754,7 +5769,7 @@ ${keyNote}
             
             scopeItem.innerHTML = `
                 <div style="flex: 0 0 100px;">
-                    <label>項目${activeCount + 1}：</label>
+                    <label>照片項目${activeCount + 1}：</label>
                 </div>
                 <div style="flex: 1;">
                     <input type="text" id="clean-scope-${cleanScopeNextId}" placeholder="清潔項目 ${activeCount + 1}" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
@@ -7462,14 +7477,14 @@ ${keyNote}
                     </table>
                 `;
                 
-                document.getElementById('quote-vendor-comparison-table').innerHTML = tableHtml;
-                document.getElementById('quote-vendor-comparison').style.display = 'block';
+                document。getElementById('quote-vendor-comparison-table')。innerHTML = tableHtml;
+                document.getElementById('quote-vendor-comparison')。style.display = 'block';
                 
                 console.log('Quote vendor comparison generated successfully');
                 
             } catch (error) {
                 console.error('Error generating quote vendor comparison:', error);
-                document.getElementById('quote-vendor-comparison-table').innerHTML = '<div class="no-comparison">載入競爭廠商資料失敗</div>';
+                document.getElementById('quote-vendor-comparison-table')。innerHTML = '<div class="no-comparison">載入競爭廠商資料失敗</div>';
                 document.getElementById('quote-vendor-comparison').style.display = 'block';
             }
         }
@@ -7498,8 +7513,8 @@ ${keyNote}
                 }
                 
                 console.log('Customer frequency:', frequency);
-                console.log('FieldMapping frequency:', fieldMapping.frequency);
-                console.log('FieldMapping weeklyFrequency:', fieldMapping.weeklyFrequency);
+                console。log('FieldMapping frequency:'， fieldMapping。frequency);
+                console。log('FieldMapping weeklyFrequency:'， fieldMapping.weeklyFrequency);
                 
                 if (frequency === 0) {
                     document.getElementById('vendor-comparison-table').innerHTML = '<div class="no-comparison">無法確定一週次數，無法進行廠商比較</div>';
