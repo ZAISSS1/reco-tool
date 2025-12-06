@@ -1215,6 +1215,7 @@
             <button class="tab active" onclick="showTab('auto-quote')"><span class="desktop-text">包月自動報價</span><span class="mobile-text">自動報價</span></button>
             <button class="tab" onclick="showTab('single-quote')"><span class="desktop-text">單趟自動報價</span><span class="mobile-text">單趟報價</span></button>
             <button class="tab" onclick="showTab('quote')"><span class="desktop-text">包月手動報價</span><span class="mobile-text">客戶報價</span></button>
+            <button class="tab" onclick="showTab('clean-quote')"><span class="desktop-text">清潔手動報價</span><span class="mobile-text">清潔報價</span></button>
             <button class="tab" onclick="showTab('monthly')"><span class="desktop-text">包月任務</span><span class="mobile-text">包月任務</span></button>
             <button class="tab" onclick="showTab('single')"><span class="desktop-text">單趟任務</span><span class="mobile-text">單趟任務</span></button>
             <button class="tab" onclick="showTab('clean')"><span class="desktop-text">單次清潔</span><span class="mobile-text">清潔任務</span></button>
@@ -1590,6 +1591,103 @@
                         </button>
                     </div>
                     <div class="status" id="quote-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 清潔手動報價單 -->
+        <div id="clean-quote" class="tab-content">
+            <div class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div style="flex: 1;"></div>
+                    <h3 style="margin: 0; text-align: center;">清潔手動報價</h3>
+                    <div style="flex: 1; display: flex; justify-content: flex-end;">
+                        <button class="clear-btn-small" onclick="clearCleanQuoteForm()" title="清空表單">×</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <h4>⚙️ 資料輸入</h4>
+                    
+                    <!-- 第一行：日期、時間、費用 -->
+                    <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div>
+                            <label for="clean-quote-date">執行日期：</label>
+                            <input type="date" id="clean-quote-date">
+                        </div>
+                        <div>
+                            <label for="clean-quote-time">開始時間：</label>
+                            <input type="text" id="clean-quote-time" placeholder="例：11：30~12：00">
+                        </div>
+                        <div>
+                            <label for="clean-quote-fee">清潔費用：</label>
+                            <input type="number" id="clean-quote-fee" placeholder="例：3000" min="0">
+                        </div>
+                    </div>
+                    
+                    <!-- 動態清潔範圍區域 -->
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="margin: 0;">🧹 清潔範圍</h4>
+                            <button id="add-clean-quote-scope-btn" onclick="addCleanQuoteScope()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                ➕ 增加項目
+                            </button>
+                        </div>
+                        <div id="clean-quote-scope-container">
+                            <!-- 圖1（預設） -->
+                            <div class="clean-quote-scope-item" id="clean-quote-scope-item-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                                <div style="flex: 0 0 60px;">
+                                    <label>圖1：</label>
+                                </div>
+                                <div style="flex: 1;">
+                                    <input type="text" id="clean-quote-scope-1" placeholder="清潔項目描述" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4>📷 照片上傳</h4>
+                    
+                    <!-- 照片功能一行式布局 -->
+                    <div class="photo-upload-row" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: stretch; margin-bottom: 15px; min-height: 110px;">
+                        <!-- 拖曳上傳區域 -->
+                        <div id="clean-quote-drop-zone" class="drop-zone-inline" style="flex: 0 0 280px; border: 2px dashed #666; border-radius: 8px; padding: 15px; text-align: center; background: #2a2a2a; transition: all 0.3s ease; position: relative; height: 110px; display: flex; align-items: center; justify-content: center;">
+                            <div class="drop-zone-content">
+                                <div style="font-size: 1.5em; margin-bottom: 5px;">📁</div>
+                                <div style="color: #ccc; font-size: 14px;">拖曳照片或點擊選擇</div>
+                                <input type="file" id="clean-quote-images" multiple accept="image/png,image/jpg,image/jpeg" style="opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;">
+                            </div>
+                        </div>
+                        
+                        <!-- 控制按鈕區域 -->
+                        <div id="clean-quote-merge-controls" style="display: none; flex: 0 0 auto; height: 110px; flex-direction: column; justify-content: center; gap: 8px;">
+                            <button type="button" class="btn-merge" onclick="mergeCleanQuoteImages()">≫</button>
+                            <button type="button" class="btn-clear" onclick="clearCleanQuoteImages()">×</button>
+                        </div>
+                        
+                        <!-- 照片預覽區域 -->
+                        <div id="clean-quote-image-preview" style="flex: 1; min-width: 180px; min-height: 110px; display: flex; flex-direction: column; justify-content: flex-start;"></div>
+                    </div>
+                    
+                    <!-- 合併照片顯示區域 -->
+                    <div id="clean-quote-merged-preview" style="width: 100%; margin-bottom: 15px; display: flex; justify-content: center;"></div>
+                    
+                    <div style="display: flex; justify-content: center; margin: 25px 0;">
+                        <button onclick="generateCleanQuote()" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            生成報價
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="output-section" id="clean-quote-output" style="display: none;">
+                    <h4>📋 清潔報價單</h4>
+                    <div class="output-area" id="clean-quote-result"></div>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <button onclick="copyToClipboard('clean-quote-result')" style="background: white; color: #000; border: none; padding: 12px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            一鍵複製
+                        </button>
+                    </div>
+                    <div class="status" id="clean-quote-status"></div>
                 </div>
             </div>
         </div>
@@ -3575,6 +3673,12 @@ ${otherDetails}
             // Initialize drag and drop for single trip and clean photos
             initializeSingleImageUpload();
             initializeCleanImageUpload();
+            initializeCleanQuoteImageUpload();
+            
+            // Set default date for clean-quote-date
+            if (document.getElementById('clean-quote-date')) {
+                document.getElementById('clean-quote-date').value = today;
+            }
         });
 
         // Single trip image upload functions
@@ -4046,6 +4150,379 @@ ${otherDetails}
                 
                 showStatus('clean-status', `✅ 已成功合併 ${images.length} 張照片！`, 'success');
             });
+        }
+
+        // ========== 清潔手動報價相關函數 ==========
+        let cleanQuoteImages = [];
+        let cleanQuoteScopeNextId = 1;
+
+        function initializeCleanQuoteImageUpload() {
+            const dropZone = document.getElementById('clean-quote-drop-zone');
+            const fileInput = document.getElementById('clean-quote-images');
+
+            if (!dropZone || !fileInput) return;
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', (e) => {
+                if (!dropZone.contains(e.relatedTarget)) {
+                    dropZone.classList.remove('dragover');
+                }
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files);
+                handleCleanQuoteImageFiles(files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                handleCleanQuoteImageFiles(files);
+            });
+        }
+
+        function handleCleanQuoteImageFiles(files) {
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (imageFiles.length === 0) {
+                showStatus('clean-quote-status', '❌ 請選擇有效的圖片檔案 (PNG, JPG, JPEG)', 'error');
+                return;
+            }
+
+            imageFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageData = {
+                        file: file,
+                        dataUrl: e.target.result,
+                        id: Date.now() + Math.random()
+                    };
+                    cleanQuoteImages.push(imageData);
+                    updateCleanQuoteImagePreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function updateCleanQuoteImagePreview() {
+            const previewContainer = document.getElementById('clean-quote-image-preview');
+            const mergeControls = document.getElementById('clean-quote-merge-controls');
+            
+            if (cleanQuoteImages.length === 0) {
+                previewContainer.innerHTML = '';
+                mergeControls.style.display = 'none';
+                return;
+            }
+            
+            mergeControls.style.display = 'flex';
+            
+            let previewHTML = '<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start;">';
+            const maxShow = 6;
+            cleanQuoteImages.slice(0, maxShow).forEach((img, index) => {
+                const photoNumber = index + 1;
+                previewHTML += `
+                    <div style="position: relative; width: 80px; height: 80px;">
+                        <img src="${img.dataUrl}" alt="預覽" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #555;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.7); color: #fff; font-size: 20px; font-weight: bold; padding: 5px 10px; border-radius: 4px;">${photoNumber}</div>
+                        <button onclick="removeCleanQuoteImage('${img.id}')" style="position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; background: #ff4444; border: none; color: white; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+                    </div>
+                `;
+            });
+            
+            if (cleanQuoteImages.length > 6) {
+                previewHTML += `<div style="color: #888; font-size: 12px; align-self: center;">+${cleanQuoteImages.length - 6}張</div>`;
+            }
+            
+            previewHTML += '</div>';
+            previewContainer.innerHTML = previewHTML;
+        }
+
+        function removeCleanQuoteImage(imageId) {
+            cleanQuoteImages = cleanQuoteImages.filter(img => img.id !== imageId);
+            updateCleanQuoteImagePreview();
+            
+            if (cleanQuoteImages.length === 0) {
+                document.getElementById('clean-quote-merged-preview').innerHTML = '';
+                showStatus('clean-quote-status', '✅ 所有照片已清除', 'success');
+            }
+        }
+
+        function clearCleanQuoteImages() {
+            cleanQuoteImages = [];
+            document.getElementById('clean-quote-images').value = '';
+            document.getElementById('clean-quote-image-preview').innerHTML = '';
+            document.getElementById('clean-quote-merged-preview').innerHTML = '';
+            document.getElementById('clean-quote-merge-controls').style.display = 'none';
+            showStatus('clean-quote-status', '✅ 所有照片已清除', 'success');
+        }
+
+        function mergeCleanQuoteImages() {
+            if (cleanQuoteImages.length === 0) {
+                showStatus('clean-quote-status', '❌ 請先上傳照片', 'error');
+                return;
+            }
+
+            showStatus('clean-quote-status', '🔄 正在合併照片...', 'success');
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            Promise.all(cleanQuoteImages.map(imageData => {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.src = imageData.dataUrl;
+                });
+            })).then(images => {
+                let imagesPerRow, rows;
+                if (images.length === 1) {
+                    imagesPerRow = 1;
+                    rows = 1;
+                } else if (images.length === 2) {
+                    imagesPerRow = 2;
+                    rows = 1;
+                } else if (images.length === 3) {
+                    imagesPerRow = 3;
+                    rows = 1;
+                } else if (images.length === 4) {
+                    imagesPerRow = 2;
+                    rows = 2;
+                } else if (images.length <= 6) {
+                    imagesPerRow = 3;
+                    rows = 2;
+                } else if (images.length <= 9) {
+                    imagesPerRow = 3;
+                    rows = 3;
+                } else {
+                    imagesPerRow = 4;
+                    rows = Math.ceil(images.length / 4);
+                }
+                
+                const imageSize = Math.floor(600 / Math.max(imagesPerRow, rows));
+                const totalWidth = imagesPerRow * imageSize;
+                const totalHeight = rows * imageSize;
+                
+                const actualWidth = Math.max(totalWidth, totalHeight);
+                const actualHeight = Math.max(totalWidth, totalHeight);
+                canvas.width = actualWidth;
+                canvas.height = actualHeight;
+                const finalMarginX = (actualWidth - totalWidth) / 2;
+                const finalMarginY = (actualHeight - totalHeight) / 2;
+                
+                images.forEach((img, index) => {
+                    const col = index % imagesPerRow;
+                    const row = Math.floor(index / imagesPerRow);
+                    const x = finalMarginX + col * imageSize;
+                    const y = finalMarginY + row * imageSize;
+                    
+                    const aspectRatio = img.width / img.height;
+                    let sourceX = 0, sourceY = 0, sourceSize;
+                    
+                    if (aspectRatio > 1) {
+                        sourceSize = img.height;
+                        sourceX = (img.width - sourceSize) / 2;
+                    } else {
+                        sourceSize = img.width;
+                        sourceY = (img.height - sourceSize) / 2;
+                    }
+                    
+                    ctx.drawImage(img, sourceX, sourceY, sourceSize, sourceSize, x, y, imageSize, imageSize);
+                    
+                    ctx.strokeStyle = '#FF0000';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, imageSize, imageSize);
+                    
+                    const photoNumber = index + 1;
+                    const fontSize = Math.max(16, Math.floor(imageSize / 6));
+                    ctx.font = `bold ${fontSize}px Arial`;
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    const textWidth = ctx.measureText(photoNumber.toString()).width;
+                    const padding = 4;
+                    const labelX = x + padding;
+                    const labelY = y + imageSize - fontSize - padding;
+                    ctx.fillRect(labelX - padding, labelY - padding, textWidth + padding * 2, fontSize + padding * 2);
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillText(photoNumber.toString(), labelX, labelY + fontSize - 2);
+                });
+                
+                const mergedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                const mergedPreview = document.getElementById('clean-quote-merged-preview');
+                mergedPreview.innerHTML = `
+                    <div class="merged-photo">
+                        <div class="merged-photo-content">
+                            <div><strong>合併照片：</strong></div>
+                            <img src="${mergedDataUrl}" alt="合併照片">
+                        </div>
+                        <div class="merged-photo-controls">
+                            <button class="btn-download" onclick="downloadMergedImage('${mergedDataUrl}', 'clean-quote')">↓</button>
+                        </div>
+                    </div>
+                `;
+                
+                showStatus('clean-quote-status', `✅ 已成功合併 ${images.length} 張照片！`, 'success');
+            });
+        }
+
+        function addCleanQuoteScope() {
+            cleanQuoteScopeNextId++;
+            if (cleanQuoteScopeNextId > 30) {
+                showStatus('clean-quote-status', '❌ 最多只能新增30個項目', 'error');
+                return;
+            }
+            
+            const container = document.getElementById('clean-quote-scope-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'clean-quote-scope-item';
+            newItem.id = `clean-quote-scope-item-${cleanQuoteScopeNextId}`;
+            newItem.style.cssText = 'display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;';
+            newItem.innerHTML = `
+                <div style="flex: 0 0 60px;">
+                    <label>圖${cleanQuoteScopeNextId}：</label>
+                </div>
+                <div style="flex: 1;">
+                    <input type="text" id="clean-quote-scope-${cleanQuoteScopeNextId}" placeholder="清潔項目描述" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
+                </div>
+                <button onclick="removeCleanQuoteScope(${cleanQuoteScopeNextId})" style="background: #ff4444; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">✕</button>
+            `;
+            container.appendChild(newItem);
+            updateCleanQuoteScopeButtonState();
+        }
+
+        function removeCleanQuoteScope(id) {
+            const item = document.getElementById(`clean-quote-scope-item-${id}`);
+            if (item) {
+                item.remove();
+            }
+            updateCleanQuoteScopeButtonState();
+        }
+
+        function updateCleanQuoteScopeButtonState() {
+            const count = document.querySelectorAll('.clean-quote-scope-item').length;
+            const btn = document.getElementById('add-clean-quote-scope-btn');
+            if (btn) {
+                btn.disabled = count >= 30;
+                btn.style.opacity = count >= 30 ? '0.5' : '1';
+            }
+        }
+
+        function clearCleanQuoteForm() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('clean-quote-date').value = today;
+            document.getElementById('clean-quote-time').value = '';
+            document.getElementById('clean-quote-fee').value = '';
+            
+            const scopeContainer = document.getElementById('clean-quote-scope-container');
+            scopeContainer.innerHTML = `
+                <div class="clean-quote-scope-item" id="clean-quote-scope-item-1" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                    <div style="flex: 0 0 60px;">
+                        <label>圖1：</label>
+                    </div>
+                    <div style="flex: 1;">
+                        <input type="text" id="clean-quote-scope-1" placeholder="清潔項目描述" value="" style="width: 100%; padding: 8px; border: 1px solid #555; border-radius: 4px; background: #2a2a2a; color: #e0e0e0;">
+                    </div>
+                </div>
+            `;
+            cleanQuoteScopeNextId = 1;
+            updateCleanQuoteScopeButtonState();
+            
+            clearCleanQuoteImages();
+            
+            document.getElementById('clean-quote-output').style.display = 'none';
+            document.getElementById('clean-quote-status').textContent = '';
+            
+            showStatus('clean-quote-status', '✅ 表單已清空重置！', 'success');
+        }
+
+        function generateCleanQuote() {
+            const dateInput = document.getElementById('clean-quote-date').value;
+            const timeInput = document.getElementById('clean-quote-time').value;
+            const feeInput = document.getElementById('clean-quote-fee').value;
+            
+            let formattedDate = '';
+            if (dateInput) {
+                const date = new Date(dateInput);
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                formattedDate = `${month}/${day}`;
+            }
+            
+            let scopeItems = [];
+            const scopeInputs = document.querySelectorAll('.clean-quote-scope-item');
+            scopeInputs.forEach((item, index) => {
+                const input = item.querySelector('input[type="text"]');
+                if (input) {
+                    const value = input.value.trim();
+                    scopeItems.push(`圖${index + 1} ${value}`);
+                }
+            });
+            
+            let quoteText = `⛔報價資料⛔
+
+清潔範圍：
+${scopeItems.join('\n')}
+
+（⚠️僅簡易清潔"非細部清潔"）
+（⚠️過程中嚴禁催促及辱罵）
+（⚠️清潔目的為整潔並非達成全新）
+（⚠️陳年黃斑污垢無法還原）
+（⚠️僅依照上述合約內容執行業務
+（⚠️拒絕使用任何刺鼻殘留藥劑
+
+
+執行日期：${formattedDate}
+開始時間：${timeInput}
+上述時間抵達並開始執行業務
+（請勿催促抵達時間 以免多有糾紛）
+
+清潔費用：${feeInput} 元
+
+
+-
+📑配合事項📑
+▪如因政策變動需改時間
+⬇️將提前告知煩請配合
+▪收款後不退款內容不更改
+➡️依合約日期內容執行業務
+
+    ⇩
+
+🚨 其他問題 🚨
+📄請先完整閱讀報價內容提出
+💬客服解決任何問題
+
+    ⇩
+
+✔️.上述問題均解決
+✔️.上述內容能配合
+回覆告知我們：同意✅
+
+    ⇩
+
+客服收到_同意✅_後
+💧客服➡️提供繳費單
+💧客戶➡️完成繳費
+💧客服➡️預約完成
+
+
+⚠️ 注意事項 ⚠️
+
+🔴1分錢1分服務低價無安全保障
+🟡年輕專業團隊-流程皆有 SOP
+🟢成員平均 30-35 歲皆具良民證
+
+
+
+🌍解決清潔問題並不只是服務
+⚡我們改變的是城市的清潔速度`;
+
+            document.getElementById('clean-quote-result').innerHTML = `<pre style="white-space: pre-wrap; word-wrap: break-word; font-family: inherit; margin: 0;">${quoteText}</pre>`;
+            document.getElementById('clean-quote-output').style.display = 'block';
+            showStatus('clean-quote-status', '✅ 報價單已生成！', 'success');
         }
 
         // 自動報價單相關函數
